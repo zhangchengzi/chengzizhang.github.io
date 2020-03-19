@@ -45,31 +45,38 @@
   };
 </script>
 
-  <meta name="description" content="时代的一粒灰尘落在个人头上，就是一座山">
-<meta property="og:type" content="website">
-<meta property="og:title" content="一度灰">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="目录 MySql性能  最大数据量 最大并发数 查询耗时0.5秒 实施原则   数据表设计  数据类型 避免空值 text类型   索引优化  索引分类 优化原则   SQL优化  分批处理  不做列运算  避免Select *  操作符 &lt; &gt; 优化  OR优化  IN 优化  LIKE 优化  JOIN 优化  LinMIT 优化     &lt;!-- more --&gt;最大">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL优化笔记">
+<meta property="og:url" content="http://yoursite.com/2020/03/19/SQL%E4%BC%98%E5%8C%96/index.html">
 <meta property="og:site_name" content="一度灰">
-<meta property="og:description" content="时代的一粒灰尘落在个人头上，就是一座山">
+<meta property="og:description" content="目录 MySql性能  最大数据量 最大并发数 查询耗时0.5秒 实施原则   数据表设计  数据类型 避免空值 text类型   索引优化  索引分类 优化原则   SQL优化  分批处理  不做列运算  避免Select *  操作符 &lt; &gt; 优化  OR优化  IN 优化  LIKE 优化  JOIN 优化  LinMIT 优化     &lt;!-- more --&gt;最大">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/03/19/SQL%E4%BC%98%E5%8C%96/01.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/19/SQL%E4%BC%98%E5%8C%96/02.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/19/SQL%E4%BC%98%E5%8C%96/03.jpg">
+<meta property="article:published_time" content="2020-03-19T14:53:48.522Z">
+<meta property="article:modified_time" content="2020-03-19T14:57:55.962Z">
 <meta property="article:author" content="张城子">
+<meta property="article:tag" content="Java基础">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/19/SQL%E4%BC%98%E5%8C%96/01.jpg">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/03/19/SQL%E4%BC%98%E5%8C%96/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: true,
-    isPost: false,
+    isHome: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>一度灰</title>
+  <title>SQL优化笔记 | 一度灰</title>
   
 
 
@@ -185,10 +192,10 @@
             
 
   <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/19/SQL%E4%BC%98%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -202,8 +209,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/19/SQL%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">SQL优化笔记</a>
+          SQL优化笔记
         </h1>
 
         <div class="post-meta">
@@ -260,7 +266,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+        <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
 <li><p>MySql性能</p>
 <ul>
 <li>最大数据量</li>
@@ -421,534 +427,30 @@
 <h3 id="其他数据库"><a href="#其他数据库" class="headerlink" title="其他数据库"></a>其他数据库</h3><p>作为一名后端开发人员，务必精通作为存储核心的MySQL或SQL Server，也要积极关注NoSQL数据库，他们已经足够成熟并被广泛采用，能解决特定场景下的性能瓶颈。</p>
 <p><img src="/2020/03/19/SQL%E4%BC%98%E5%8C%96/03.jpg" alt="03"></p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag"># Java基础</a>
+          </div>
 
         
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/19/HashMap%E7%AE%80%E8%BF%B0/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/touxiang.gif">
-      <meta itemprop="name" content="张城子">
-      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一度灰">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/19/HashMap%E7%AE%80%E8%BF%B0/" class="post-title-link" itemprop="url">HashMap简述</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-19 22:06:36 / 修改时间：22:55:01" itemprop="dateCreated datePublished" datetime="2020-03-19T22:06:36+08:00">2020-03-19</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/19/HashMap%E7%AE%80%E8%BF%B0/" class="post-meta-item leancloud_visitors" data-flag-title="HashMap简述" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/19/HashMap%E7%AE%80%E8%BF%B0/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/19/HashMap%E7%AE%80%E8%BF%B0/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>HashMap</strong></p>
-<p>底层是基于哈希表实现的键值对存储，继承AbstractMap并实现了Map接口，HashMap基于hashing原理，通过put() 和 get()方法存储和获取对象。<br>当我们将键值对传递给put()方法时，它调用键值对象hashCode()方法来计算hashCode，然后找到bucket（桶）位置来存储值对象。当获取对象时，通过健对象的equals()方法找到正确的键值对，然后返回值对象。</p>
-<p>HashMap 使用LinkedList来解决碰撞问题。当发生碰撞，对象将会存储在LinkedList的下一个节点中。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/19/HashMap%E7%AE%80%E8%BF%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/19/HashMap%E7%AE%80%E8%BF%B0/" rel="prev" title="HashMap简述">
+      <i class="fa fa-chevron-left"></i> HashMap简述
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/11/Tomcat-APR%E8%B0%83%E4%BC%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/touxiang.gif">
-      <meta itemprop="name" content="张城子">
-      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一度灰">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/11/Tomcat-APR%E8%B0%83%E4%BC%98/" class="post-title-link" itemprop="url">Tomcat-APR调优</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-11 20:46:34" itemprop="dateCreated datePublished" datetime="2020-03-11T20:46:34+08:00">2020-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-19 22:50:36" itemprop="dateModified" datetime="2020-03-19T22:50:36+08:00">2020-03-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/11/Tomcat-APR%E8%B0%83%E4%BC%98/" class="post-meta-item leancloud_visitors" data-flag-title="Tomcat-APR调优" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
     
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/11/Tomcat-APR%E8%B0%83%E4%BC%98/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/11/Tomcat-APR%E8%B0%83%E4%BC%98/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Tomcat-APR"><a href="#Tomcat-APR" class="headerlink" title="Tomcat-APR"></a>Tomcat-APR</h2><h3 id="一-APR"><a href="#一-APR" class="headerlink" title="一. APR"></a>一. APR</h3><p>​    APR(Apache Portable Runtime)是Apache Http Server2.0的核心组件，最为Java程序员我们最常用的方式就是将其集成到tomcat中，能够提高tomcat的性能。那么他是如何提高性能的呢？APR能够访问高级IO特性(例如sendfile, epoll, OpenSSL)，OS级别功能(生成随机数，操作系统状态管理), 本地进程操作(共享内存, Unix Sockets)等功能，而我们使用一个叫做 Tomcat Native的中间件，来作为APR和Tomcat的通道，就可以使得Tomcat使用到APR的这些高级特性，例如多路复用技术。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/11/Tomcat-APR%E8%B0%83%E4%BC%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/11/HashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/touxiang.gif">
-      <meta itemprop="name" content="张城子">
-      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一度灰">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/11/HashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">HashMap底层源码分析</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-11 02:08:33" itemprop="dateCreated datePublished" datetime="2020-03-11T02:08:33+08:00">2020-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-19 22:18:31" itemprop="dateModified" datetime="2020-03-19T22:18:31+08:00">2020-03-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/11/HashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="HashMap底层源码分析" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/11/HashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/11/HashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><p>###1. 属性介绍</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/11/HashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/touxiang.gif">
-      <meta itemprop="name" content="张城子">
-      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一度灰">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">HashMap底层源码分析</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-11 02:08:33" itemprop="dateCreated datePublished" datetime="2020-03-11T02:08:33+08:00">2020-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-19 22:17:33" itemprop="dateModified" datetime="2020-03-19T22:17:33+08:00">2020-03-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="HashMap底层源码分析" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>#ConcurrentHashMap</p>
-<p>ConcurrentHashMap是Java中的一个<strong>线程安全且高效的HashMap实现</strong>。平时涉及高并发如果要用map结构，那第一时间想到的就是它。为什么它是线程安全的，我抽时间去看了下源码，关键在   <strong>synchronized</strong> 方法。这篇笔记写下我对源码的一些分析和理解，方便加深映像</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/touxiang.gif">
-      <meta itemprop="name" content="张城子">
-      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一度灰">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="post-title-link" itemprop="url">数据结构分析以及HashMap源码分析</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-11 01:52:36" itemprop="dateCreated datePublished" datetime="2020-03-11T01:52:36+08:00">2020-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-19 22:51:07" itemprop="dateModified" datetime="2020-03-19T22:51:07+08:00">2020-03-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="post-meta-item leancloud_visitors" data-flag-title="数据结构分析以及HashMap源码分析" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2020/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="一-数据结构"><a href="#一-数据结构" class="headerlink" title="一. 数据结构"></a>一. 数据结构</h3><p>  线性数据结构（数组、链表、栈、队列）和非线性数据结构（树、图、集合）。</p>
-<h4 id="1-1-数组"><a href="#1-1-数组" class="headerlink" title="1.1 数组"></a>1.1 数组</h4><pre><code>数组在内存中必须是连续的内存空间。 </code></pre><h4 id="1-2-链表"><a href="#1-2-链表" class="headerlink" title="1.2 链表"></a>1.2 链表</h4><p>​    有了数组为什么会有链表？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 内存分配； </span><br><span class="line">2.由于其非连续内存的特性导致链表非常适用于频繁插入、删除的场景，而不见长于读取场景，这跟数组的特性恰好形成互补，链表的特性与数组互补，各有所长，而且链表由于指针的存在可以形成环形链表，在特定场景也非常有用，因此链表的存在是很有必要的。</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
   </article>
   
   
@@ -956,12 +458,10 @@
 
   </div>
 
-  
-
-
 
           </div>
           
+    <div class="comments" id="comments"></div>
 
         </div>
           
@@ -986,6 +486,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最大数据量"><span class="nav-number">1.1.</span> <span class="nav-text">最大数据量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最大并发数"><span class="nav-number">1.2.</span> <span class="nav-text">最大并发数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询耗时0-5秒"><span class="nav-number">1.3.</span> <span class="nav-text">查询耗时0.5秒</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实施原则"><span class="nav-number">1.4.</span> <span class="nav-text">实施原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据表设计"><span class="nav-number">1.5.</span> <span class="nav-text">数据表设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据类型"><span class="nav-number">1.5.1.</span> <span class="nav-text">数据类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#避免空值"><span class="nav-number">1.5.2.</span> <span class="nav-text">避免空值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#text类型优化"><span class="nav-number">1.5.3.</span> <span class="nav-text">text类型优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引优化"><span class="nav-number">1.6.</span> <span class="nav-text">索引优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#索引分类"><span class="nav-number">1.6.1.</span> <span class="nav-text">索引分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引优化-1"><span class="nav-number">1.6.2.</span> <span class="nav-text">索引优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL优化"><span class="nav-number">1.7.</span> <span class="nav-text">SQL优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#分批处理"><span class="nav-number">1.7.1.</span> <span class="nav-text">分批处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#操作符优化"><span class="nav-number">1.7.2.</span> <span class="nav-text">操作符优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OR优化"><span class="nav-number">1.7.3.</span> <span class="nav-text">OR优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不做列运算"><span class="nav-number">1.7.4.</span> <span class="nav-text">不做列运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#避免Select-all"><span class="nav-number">1.7.5.</span> <span class="nav-text">避免Select all</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Like优化"><span class="nav-number">1.7.6.</span> <span class="nav-text">Like优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Join优化"><span class="nav-number">1.7.7.</span> <span class="nav-text">Join优化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他数据库"><span class="nav-number">1.8.</span> <span class="nav-text">其他数据库</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
