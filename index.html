@@ -214,7 +214,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-03-19 22:53:48 / 修改时间：22:57:55" itemprop="dateCreated datePublished" datetime="2020-03-19T22:53:48+08:00">2020-03-19</time>
+              <time title="创建时间：2020-03-19 22:53:48 / 修改时间：23:02:30" itemprop="dateCreated datePublished" datetime="2020-03-19T22:53:48+08:00">2020-03-19</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -305,122 +305,14 @@
 </ul>
 </li>
 </ol>
-<pre><code>&lt;!-- more --&gt;</code></pre><h3 id="最大数据量"><a href="#最大数据量" class="headerlink" title="最大数据量"></a>最大数据量</h3><p>MySql没有限制单表的最大记录数，它取决于操作系统对文件大小的限制。<br><img src="/2020/03/19/SQL%E4%BC%98%E5%8C%96/01.jpg" alt="01"></p>
-<p>《阿里巴巴Java开发手册》提出单表行数超过500万行或者单表容量超过2GB，才推荐分库分表。性能由综合因素决定，抛开业务复杂度，影响程度依次是硬件配置、MySQL配置、数据表设计、索引优化。500万这个值仅供参考，并非铁律。</p>
-<h3 id="最大并发数"><a href="#最大并发数" class="headerlink" title="最大并发数"></a><strong>最大并发数</strong></h3><p>并发数是指同一时刻数据库能处理多少个请求，由max_connections和max_user_connections决定。max_connections是指MySQL实例的最大连接数，上限值是16384，max_user_connections是指每个数据库用户的最大连接数。</p>
-<p>MySQL会为每个连接提供缓冲区，意味着消耗更多的内存。如果连接数设置太高硬件吃不消，太低又不能充分利用硬件。一般要求两者比值超过10%，计算方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">max_used_connections &#x2F; max_connections * 100% &#x3D; 3&#x2F;100 *100% ≈ 3%</span><br></pre></td></tr></table></figure>
-
-<p>查看最大连接数与响应最大连接数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">show variables like &#39;%max_connections%&#39;;</span><br><span class="line">show variables like &#39;%max_user_connections%&#39;;</span><br></pre></td></tr></table></figure>
-
-<p>在配置文件my.cnf中修改最大连接数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">max_connections &#x3D; 100</span><br><span class="line">max_used_connections &#x3D; 20</span><br></pre></td></tr></table></figure>
-
-<h3 id="查询耗时0-5秒"><a href="#查询耗时0-5秒" class="headerlink" title="查询耗时0.5秒"></a><strong>查询耗时0.5秒</strong></h3><p>建议将单次查询耗时控制在0.5秒以内，0.5秒是个经验值，源于用户体验的3秒原则。如果用户的操作3秒内没有响应，将会厌烦甚至退出。响应时间=客户端UI渲染耗时+网络请求耗时+应用程序处理耗时+查询数据库耗时，0.5秒就是留给数据库1/6的处理时间。</p>
-<h3 id="实施原则"><a href="#实施原则" class="headerlink" title="实施原则"></a><strong>实施原则</strong></h3><p>相比NoSQL数据库，MySQL是个娇气脆弱的家伙。它就像体育课上的女同学，一点纠纷就和同学闹别扭(扩容难)，跑两步就气喘吁吁(容量小并发低)，常常身体不适要请假(SQL约束太多)。如今大家都会搞点分布式，应用程序扩容比数据库要容易得多，所以实施原则是<strong>数据库少干活，应用程序多干活</strong>。</p>
-<ul>
-<li>充分利用但不滥用索引，须知索引也消耗磁盘和CPU。</li>
-<li>不推荐使用数据库函数格式化数据，交给应用程序处理。</li>
-<li>不推荐使用外键约束，用应用程序保证数据准确性。</li>
-<li>写多读少的场景，不推荐使用唯一索引，用应用程序保证唯一性。</li>
-<li>适当冗余字段，尝试创建中间表，用应用程序计算中间结果，用空间换时间。</li>
-<li>不允许执行极度耗时的事务，配合应用程序拆分成更小的事务。</li>
-<li>预估重要数据表（比如订单表）的负载和数据增长态势，提前优化。</li>
-</ul>
-<h3 id="数据表设计"><a href="#数据表设计" class="headerlink" title="数据表设计"></a><strong>数据表设计</strong></h3><h4 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a><strong>数据类型</strong></h4><p>数据类型的选择原则：更简单或者占用空间更小。</p>
-<ul>
-<li>如果长度能够满足，整型尽量使用tinyint、smallint、medium_int而非int。</li>
-<li>如果字符串长度确定，采用char类型。</li>
-<li>如果varchar能够满足，不采用text类型。</li>
-<li>精度要求较高的使用decimal类型，也可以使用BIGINT，比如精确两位小数就乘以100后保存。</li>
-<li>尽量采用timestamp而非datetime。</li>
-</ul>
-<p><img src="/2020/03/19/SQL%E4%BC%98%E5%8C%96/02.jpg" alt="02"></p>
-<p>相比datetime，timestamp占用更少的空间，以UTC的格式储存自动转换时区。</p>
-<h4 id="避免空值"><a href="#避免空值" class="headerlink" title="避免空值"></a><strong>避免空值</strong></h4><p>MySQL中字段为NULL时依然占用空间，会使索引、索引统计更加复杂。从NULL值更新到非NULL无法做到原地更新，容易发生索引分裂影响性能。尽可能将NULL值用有意义的值代替，也能避免SQL语句里面包含is not null的判断。</p>
-<h4 id="text类型优化"><a href="#text类型优化" class="headerlink" title="text类型优化"></a><strong>text类型优化</strong></h4><p>由于text字段储存大量数据，表容量会很早涨上去，影响其他字段的查询性能。建议抽取出来放在子表里，用业务主键关联。</p>
-<h3 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h3><h4 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h4><ul>
-<li>普通索引：最基本的索引。</li>
-<li>组合索引：多个字段上建立的索引，能够加速复合查询条件的检索。</li>
-<li>唯一索引：与普通索引类似，但索引列的值必须唯一，允许有空值。</li>
-<li>组合唯一索引：列值的组合必须唯一。</li>
-<li>主键索引：特殊的唯一索引，用于唯一标识数据表中的某一条记录，不允许有空值，一般用primary key约束。</li>
-<li>全文索引：用于海量文本的查询，MySQL5.6之后的InnoDB和MyISAM均支持全文索引。由于查询精度以及扩展性不佳，更多的企业选择Elasticsearch。</li>
-</ul>
-<h4 id="索引优化-1"><a href="#索引优化-1" class="headerlink" title="索引优化"></a>索引优化</h4><ul>
-<li>分页查询很重要，如果查询数据量超过30%，MYSQL不会使用索引。</li>
-<li>单表索引数不超过5个、单个索引字段数不超过5个。</li>
-<li>字符串可使用前缀索引，前缀长度控制在5-8个字符。</li>
-<li>字段唯一性太低，增加索引没有意义，如：是否删除、性别。</li>
-</ul>
-<p>合理使用覆盖索引，如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select login_name, nick_name from member where login_name &#x3D; ?</span><br></pre></td></tr></table></figure>
-
-<p>login_name, nick_name两个字段建立组合索引，比login_name简单索引要更快。</p>
-<h3 id="SQL优化"><a href="#SQL优化" class="headerlink" title="SQL优化"></a><strong>SQL优化</strong></h3><h4 id="分批处理"><a href="#分批处理" class="headerlink" title="分批处理"></a><strong>分批处理</strong></h4><p>小时候看到鱼塘挖开小口子放水，水面有各种漂浮物。浮萍和树叶总能顺利通过出水口，而树枝会挡住其他物体通过，有时还会卡住，需要人工清理。MySQL就是鱼塘，最大并发数和网络带宽就是出水口，用户SQL就是漂浮物。</p>
-<p>不带分页参数的查询或者影响大量数据的update和delete操作，都是树枝，我们要把它打散分批处理，举例说明：</p>
-<p>业务描述：更新用户所有已过期的优惠券为不可用状态。</p>
-<p>SQL语句：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update status&#x3D;0 FROM &#96;coupon&#96; WHERE expire_date &lt;&#x3D; #&#123;currentDate&#125; and status&#x3D;1;</span><br></pre></td></tr></table></figure>
-
-<p>如果大量优惠券需要更新为不可用状态，执行这条SQL可能会堵死其他SQL，分批处理伪代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">int pageNo &#x3D; 1;</span><br><span class="line">int PAGE_SIZE &#x3D; 100;</span><br><span class="line">while(true) &#123;</span><br><span class="line">    List&lt;Integer&gt; batchIdList &#x3D; queryList(&#39;select id FROM &#96;coupon&#96; WHERE expire_date &lt;&#x3D; #&#123;currentDate&#125; and status &#x3D; 1 limit #&#123;(pageNo-1) * PAGE_SIZE&#125;,#&#123;PAGE_SIZE&#125;&#39;);</span><br><span class="line">    if (CollectionUtils.isEmpty(batchIdList)) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    update(&#39;update status &#x3D; 0 FROM &#96;coupon&#96; where status &#x3D; 1 and id in #&#123;batchIdList&#125;&#39;)</span><br><span class="line">    pageNo ++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="操作符优化"><a href="#操作符优化" class="headerlink" title="操作符优化"></a>操作符优化</h4><p>通常&lt;&gt;操作符无法使用索引，举例如下，查询金额不为100元的订单：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select id from orders where amount !&#x3D; 100;</span><br></pre></td></tr></table></figure>
-
-<p>如果金额为100的订单极少，这种数据分布严重不均的情况下，有可能使用索引。鉴于这种不确定性，采用union聚合搜索结果，改写方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(select id from orders where amount &gt; 100)</span><br><span class="line"> union all</span><br><span class="line">(select id from orders where amount &lt; 100 and amount &gt; 0)</span><br></pre></td></tr></table></figure>
-
-<h4 id="OR优化"><a href="#OR优化" class="headerlink" title="OR优化"></a><strong>OR优化</strong></h4><p>在Innodb引擎下or无法使用组合索引，比如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select id，product_name from orders where mobile_no &#x3D; &#39;13421800407&#39; or user_id &#x3D; 100;</span><br></pre></td></tr></table></figure>
-
-<p>OR无法命中mobile_no + user_id的组合索引，可采用union，如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(select id，product_name from orders where mobile_no &#x3D; &#39;13421800407&#39;)</span><br><span class="line"> union</span><br><span class="line">(select id，product_name from orders where user_id &#x3D; 100);</span><br></pre></td></tr></table></figure>
-
-<p>此时id和product_name字段都有索引，查询才最高效。</p>
-<p><strong>IN优化</strong></p>
-<p>IN适合主表大子表小，EXIST适合主表小子表大。由于查询优化器的不断升级，很多场景这两者性能差不多一样了。</p>
-<p>尝试改为join查询，举例如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select id from orders where user_id in (select id from user where level &#x3D; &#39;VIP&#39;);</span><br></pre></td></tr></table></figure>
-
-<p>采用JOIN如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select o.id from orders o left join user u on o.user_id &#x3D; u.id where u.level &#x3D; &#39;VIP&#39;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="不做列运算"><a href="#不做列运算" class="headerlink" title="不做列运算"></a>不做列运算</h4><p>通常在查询条件列运算会导致索引失效，如下所示：</p>
-<p>查询当日订单</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select id from order where date_format(create_time，&#39;%Y-%m-%d&#39;) &#x3D; &#39;2019-07-01&#39;;</span><br></pre></td></tr></table></figure>
-
-<p>date_format函数会导致这个查询无法使用索引，改写后：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select id from order where create_time between &#39;2019-07-01 00:00:00&#39; and &#39;2019-07-01 23:59:59&#39;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="避免Select-all"><a href="#避免Select-all" class="headerlink" title="避免Select all"></a><strong>避免Select all</strong></h4><p>如果不查询表中所有的列，避免使用SELECT *，它会进行全表扫描，不能有效利用索引。</p>
-<h4 id="Like优化"><a href="#Like优化" class="headerlink" title="Like优化"></a><strong>Like优化</strong></h4><p>like用于模糊查询，举个例子（field已建立索引）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT column FROM table WHERE field like &#39;%keyword%&#39;;</span><br></pre></td></tr></table></figure>
-
-<p>这个查询未命中索引，换成下面的写法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT column FROM table WHERE field like &#39;keyword%&#39;;</span><br></pre></td></tr></table></figure>
-
-<p>去除了前面的%查询将会命中索引，但是产品经理一定要前后模糊匹配呢？全文索引fulltext可以尝试一下，但Elasticsearch才是终极武器。</p>
-<h4 id="Join优化"><a href="#Join优化" class="headerlink" title="Join优化"></a><strong>Join优化</strong></h4><p>join的实现是采用Nested Loop Join算法，就是通过驱动表的结果集作为基础数据，通过该结数据作为过滤条件到下一个表中循环查询数据，然后合并结果。如果有多个join，则将前面的结果集作为循环数据，再次到后一个表中查询数据。</p>
-<p>驱动表和被驱动表尽可能增加查询条件，满足ON的条件而少用Where，用小结果集驱动大结果集。<br>被驱动表的join字段上加上索引，无法建立索引的时候，设置足够的Join Buffer Size。<br>禁止join连接三个以上的表，尝试增加冗余字段。</p>
-<p><strong>Limit优化</strong></p>
-<p>limit用于分页查询时越往后翻性能越差，解决的原则：缩小扫描范围，如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from orders order by id desc limit 100000,10</span><br></pre></td></tr></table></figure>
-
-<p>耗时0.4秒</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from orders order by id desc limit 1000000,10</span><br></pre></td></tr></table></figure>
-
-<p>耗时5.2秒</p>
-<p>先筛选出ID缩小查询范围，写法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select * from orders </span><br><span class="line">where id &gt; (select id from orders order by id desc  limit 1000000, 1) </span><br><span class="line">order by id desc </span><br><span class="line">limit 0,10</span><br></pre></td></tr></table></figure>
-
-<p>耗时0.3秒</p>
-<p>如果以上方案依然很慢呢？只好用游标了，感兴趣的朋友阅读JDBC使用游标实现分页查询的方法</p>
-<h3 id="其他数据库"><a href="#其他数据库" class="headerlink" title="其他数据库"></a>其他数据库</h3><p>作为一名后端开发人员，务必精通作为存储核心的MySQL或SQL Server，也要积极关注NoSQL数据库，他们已经足够成熟并被广泛采用，能解决特定场景下的性能瓶颈。</p>
-<p><img src="/2020/03/19/SQL%E4%BC%98%E5%8C%96/03.jpg" alt="03"></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/19/SQL%E4%BC%98%E5%8C%96/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
