@@ -220,7 +220,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-20 00:52:17" itemprop="dateModified" datetime="2020-03-20T00:52:17+08:00">2020-03-20</time>
+                <time title="修改时间：2020-03-20 01:02:31" itemprop="dateModified" datetime="2020-03-20T01:02:31+08:00">2020-03-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -645,7 +645,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-19 22:18:31" itemprop="dateModified" datetime="2020-03-19T22:18:31+08:00">2020-03-19</time>
+                <time title="修改时间：2020-03-20 01:11:48" itemprop="dateModified" datetime="2020-03-20T01:11:48+08:00">2020-03-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -692,6 +692,7 @@
 
       
           <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><p>###1. 属性介绍</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//哈希表数组的默认长度 16</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">4</span>; <span class="comment">// aka 16</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//哈希表数组的最大长度,2的30次方的原因是,int 最大值是 2的31次方减 1,所以只能是 30 次方</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//默认的加载因子,加载因子指的是 hashmap 中数据个数超过数组长度*当前加载因子的时候会触发扩容</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> DEFAULT_LOAD_FACTOR = <span class="number">0.75f</span>;</span><br><span class="line"></span><br><span class="line"> 	<span class="comment">//当单个位置的数据链表长度超过 8 的时候会将该链表转换为红黑树</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TREEIFY_THRESHOLD = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//当当前位置的红黑树内容长度小于 6 的时候会重新变回链表</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> UNTREEIFY_THRESHOLD = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//当某个位置的链表在转换为红黑树的时候,如果此时数组长度小于 64 会先进行扩容</span></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MIN_TREEIFY_CAPACITY = <span class="number">64</span>;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/03/11/HashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/#more" rel="contents">
@@ -732,7 +733,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">HashMap底层源码分析</a>
+            <a href="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">ConcurrentHashMap底层源码分析</a>
         </h1>
 
         <div class="post-meta">
@@ -749,7 +750,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-19 22:17:33" itemprop="dateModified" datetime="2020-03-19T22:17:33+08:00">2020-03-19</time>
+                <time title="修改时间：2020-03-20 01:11:56" itemprop="dateModified" datetime="2020-03-20T01:11:56+08:00">2020-03-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -764,7 +765,7 @@
             </span>
 
           
-            <span id="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="HashMap底层源码分析" title="阅读次数">
+            <span id="/2020/03/11/ConcurrentHashMap%E5%BA%95%E5%B1%82%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="ConcurrentHashMap底层源码分析" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
