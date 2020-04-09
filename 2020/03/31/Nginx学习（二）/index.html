@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="前面一篇笔记复习了下Nginx的简单使用以及部署，一般Nginx部署之后其他的基本上不用动了，只需要配置就好了，包括使用Nginx也是通过修改一些列配置实现的，这几天有空的时候仔细过了一遍Nginx的配置原理以及逻辑架构，代理、正反向代理，代理操作指令等，写下这篇笔记。 Conf配置文件详解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx学习（二）">
+<meta property="og:url" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="一度灰">
+<meta property="og:description" content="前面一篇笔记复习了下Nginx的简单使用以及部署，一般Nginx部署之后其他的基本上不用动了，只需要配置就好了，包括使用Nginx也是通过修改一些列配置实现的，这几天有空的时候仔细过了一遍Nginx的配置原理以及逻辑架构，代理、正反向代理，代理操作指令等，写下这篇笔记。 Conf配置文件详解">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/01.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/02.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/03.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/04.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/05.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/06.jpg">
+<meta property="article:published_time" content="2020-03-31T11:02:25.000Z">
+<meta property="article:modified_time" content="2020-04-09T14:08:21.847Z">
+<meta property="article:author" content="张城子">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/01.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Nginx学习（二） | 一度灰</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+<script src="//code.tidio.co/yo54advhndcyeujqgvq3i0x6wcio3rrq.js" async></script>
+<script type="text/javascript" src="/js/src/sakura.js"></script>
+<script type="text/javascript" src="/js/src/ribbon.js"></script>
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一度灰</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">没有完美的人生，不完美才是人生</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang.gif">
+      <meta itemprop="name" content="张城子">
+      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一度灰">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Nginx学习（二）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-31 19:02:25" itemprop="dateCreated datePublished" datetime="2020-03-31T19:02:25+08:00">2020-03-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-09 22:08:21" itemprop="dateModified" datetime="2020-04-09T22:08:21+08:00">2020-04-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Nginx/" itemprop="url" rel="index">
+                    <span itemprop="name">Nginx</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/" class="post-meta-item leancloud_visitors" data-flag-title="Nginx学习（二）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>前面一篇笔记复习了下Nginx的简单使用以及部署，一般Nginx部署之后其他的基本上不用动了，只需要配置就好了，包括使用Nginx也是通过修改一些列配置实现的，这几天有空的时候仔细过了一遍Nginx的配置原理以及逻辑架构，代理、正反向代理，代理操作指令等，写下这篇笔记。</p>
+<h2 id="Conf配置文件详解"><a href="#Conf配置文件详解" class="headerlink" title="Conf配置文件详解"></a>Conf配置文件详解</h2><a id="more"></a>
+
+<p>首先在虚拟机上进入到你的conf文件夹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1、cd ~&#x2F;user&#x2F;software&#x2F;nginx&#x2F;conf</span><br><span class="line">2、 ll</span><br></pre></td></tr></table></figure>
+
+<p>找到 名为 <strong>nginx.conf</strong> 的文件 这个文件就是他的配置文件，然后我们来看一下里面的内容</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#user  nobody;</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">#Nginx 服务器并发处理服务的关键配置，</span></span><br><span class="line">  <span class="comment">#worker_processes 值越大，可以支持的并发处理量也越多，</span></span><br><span class="line">  <span class="comment">#但是会受到硬件、软件等设备的制约</span></span><br><span class="line">  worker_processes  <span class="number">1</span>;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">#error_log  logs/error.log;</span></span><br><span class="line">   <span class="comment">#error_log  logs/error.log  notice;</span></span><br><span class="line">   <span class="comment">#error_log  logs/error.log  info;</span></span><br><span class="line">   </span><br><span class="line">   <span class="comment">#pid        logs/nginx.pid;</span></span><br><span class="line">   </span><br><span class="line">  <span class="comment">#服务器与用户的网络连接设置，最大连接数为1024</span></span><br><span class="line">  events &#123;</span><br><span class="line">      worker_connections  <span class="number">1024</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">#http 全局块</span></span><br><span class="line">　<span class="comment">#http全局块配置的指令包括文件引入、MIME-TYPE 定义、日志自定义、连接超时时间、单链接请求数上限等。</span></span><br><span class="line">  http &#123;</span><br><span class="line">      include       mime.types;</span><br><span class="line">      default_type  application/octet-stream;</span><br><span class="line">  </span><br><span class="line">      <span class="comment">#log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</span></span><br><span class="line">      <span class="comment">#                  '$status $body_bytes_sent "$http_referer" '</span></span><br><span class="line">      <span class="comment">#                  '"$http_user_agent" "$http_x_forwarded_for"';</span></span><br><span class="line">  </span><br><span class="line">      <span class="comment">#access_log  logs/access.log  main;</span></span><br><span class="line">  </span><br><span class="line">      sendfile        on;</span><br><span class="line">      <span class="comment">#tcp_nopush     on;</span></span><br><span class="line">  </span><br><span class="line">      <span class="comment">#keepalive_timeout  0;</span></span><br><span class="line">      keepalive_timeout  <span class="number">65</span>;</span><br><span class="line">  </span><br><span class="line">      <span class="comment">#gzip  on;</span></span><br><span class="line">      </span><br><span class="line">      </span><br><span class="line">      <span class="comment">#这块和虚拟主机有密切关系，虚拟主机从用户角度看，</span></span><br><span class="line">      <span class="comment">#和一台独立的硬件主机是完全一样的，该技术的产生是为了节省互联网服务器硬件成本。</span></span><br><span class="line">      <span class="comment">#每个 http 块可以包括多个 server 块，而每个 server 块就相当于一个虚拟主机。</span></span><br><span class="line">      <span class="comment">#而每个 server 块也分为全局 server 块，以及可以同时包含多个 locaton 块。</span></span><br><span class="line">      server &#123;</span><br><span class="line">          <span class="keyword">listen</span>       <span class="number">80</span>;</span><br><span class="line">          server_name  localhost;</span><br><span class="line">  </span><br><span class="line">          <span class="comment">#charset koi8-r;</span></span><br><span class="line">  </span><br><span class="line">          <span class="comment">#access_log  logs/host.access.log  main;</span></span><br><span class="line">  </span><br><span class="line">          location / &#123;</span><br><span class="line">              root   html;</span><br><span class="line">              <span class="keyword">index</span>  index.html index.htm;</span><br><span class="line">          &#125;</span><br><span class="line">  </span><br><span class="line">          <span class="comment">#error_page  404              /404.html;</span></span><br><span class="line">  </span><br><span class="line">          <span class="comment"># redirect server error pages to the static page /50x.html</span></span><br><span class="line">          <span class="comment"># 一个 server 块可以配置多个 location 块。</span></span><br><span class="line">          <span class="comment">#这块的主要作用是基于 Nginx  服务器接收到的请求字符串</span></span><br><span class="line">          <span class="comment">#（例如 server_name/uri-string），对虚拟主机名称（也可以是IP别名）之外的字符串</span></span><br><span class="line">          <span class="comment">#（例如 前面的 /uri-string）进行匹配，对特定的请求进行处理。地址定向、</span></span><br><span class="line">          <span class="comment">#数据缓存和应答控制等功能，还有许多第三方模块的配置也在这里进行。</span></span><br><span class="line">          error_page   <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span>  /<span class="number">50</span>x.html;</span><br><span class="line">          location = <span class="regexp">/50x.html &#123;</span></span><br><span class="line"><span class="regexp">              root   html;</span></span><br><span class="line"><span class="regexp">          &#125;</span></span><br><span class="line"><span class="regexp">  </span></span><br><span class="line"><span class="regexp">          # proxy the PHP scripts to Apache listening on 127.0.0.1:80</span></span><br><span class="line"><span class="regexp">          #</span></span><br><span class="line"><span class="regexp">          #location ~ \.php$ &#123;</span></span><br><span class="line"><span class="regexp">          #    proxy_pass   http:/</span><span class="regexp">/127.0.0.1;</span></span><br><span class="line"><span class="regexp">          #&#125;</span></span><br><span class="line"><span class="regexp">  </span></span><br><span class="line"><span class="regexp">          # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span></span><br><span class="line"><span class="regexp">          #</span></span><br><span class="line"><span class="regexp">          #location ~ \.php$ &#123;</span></span><br><span class="line"><span class="regexp">          #    root           html;</span></span><br><span class="line"><span class="regexp">          #    fastcgi_pass   127.0.0.1:9000;</span></span><br><span class="line"><span class="regexp">          #    fastcgi_index  index.php;</span></span><br><span class="line"><span class="regexp">          #    fastcgi_param  SCRIPT_FILENAME  /scripts</span>$fastcgi_script_name;</span><br><span class="line">          <span class="comment">#    include        fastcgi_params;</span></span><br><span class="line">          <span class="comment">#&#125;</span></span><br><span class="line">  </span><br><span class="line">          <span class="comment"># deny access to .htaccess files, if Apache's document root</span></span><br><span class="line">          <span class="comment"># concurs with nginx's one</span></span><br><span class="line">          <span class="comment">#</span></span><br><span class="line">          <span class="comment">#location ~ /\.ht &#123;</span></span><br><span class="line">          <span class="comment">#    deny  all;</span></span><br><span class="line">          <span class="comment">#&#125;</span></span><br><span class="line">      &#125;</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">      <span class="comment"># another virtual host using mix of IP-, name-, and port-based configuration</span></span><br><span class="line">      <span class="comment">#</span></span><br><span class="line">      <span class="comment">#server &#123;</span></span><br><span class="line">      <span class="comment">#    listen       8000;</span></span><br><span class="line">      <span class="comment">#    listen       somename:8080;</span></span><br><span class="line">      <span class="comment">#    server_name  somename  alias  another.alias;</span></span><br><span class="line">  </span><br><span class="line">      <span class="comment">#    location / &#123;</span></span><br><span class="line">      <span class="comment">#        root   html;</span></span><br><span class="line">      <span class="comment">#        index  index.html index.htm;</span></span><br><span class="line">      <span class="comment">#    &#125;</span></span><br><span class="line">      <span class="comment">#&#125;</span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">      <span class="comment"># HTTPS server</span></span><br><span class="line">      <span class="comment">#</span></span><br><span class="line">      <span class="comment">#server &#123;</span></span><br><span class="line">      <span class="comment">#    listen       443 ssl;</span></span><br><span class="line">      <span class="comment">#    server_name  localhost;</span></span><br><span class="line"> </span><br><span class="line">     <span class="comment">#    ssl_certificate      cert.pem;</span></span><br><span class="line">     <span class="comment">#    ssl_certificate_key  cert.key;</span></span><br><span class="line"> </span><br><span class="line">     <span class="comment">#    ssl_session_cache    shared:SSL:1m;</span></span><br><span class="line">     <span class="comment">#    ssl_session_timeout  5m;</span></span><br><span class="line"> </span><br><span class="line">     <span class="comment">#    ssl_ciphers  HIGH:!aNULL:!MD5;</span></span><br><span class="line">     <span class="comment">#    ssl_prefer_server_ciphers  on;</span></span><br><span class="line"> </span><br><span class="line">     <span class="comment">#    location / &#123;</span></span><br><span class="line">     <span class="comment">#        root   html;</span></span><br><span class="line">     <span class="comment">#        index  index.html index.htm;</span></span><br><span class="line">     <span class="comment">#    &#125;</span></span><br><span class="line">     <span class="comment">#&#125;</span></span><br><span class="line"> </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h2><p>我们知道，在Java设计模式中，代理模式是这样定义的：给某个对象提供一个代理对象，并由代理对象控制原对象的引用。</p>
+<p>代理简单来说，就是如果我们想做什么，但又不想直接去做，那么这时候就找另外一个人帮我们去做。那么这里有个很典型的例子：在我们平时看的电影里面有雇杀手情节，杀手就是给我们做代理服务的，我们委托杀手去帮我们找到想要杀掉的人，我们只需要给杀手提供佣金就行，并不要我们去杀人。</p>
+<p>　　Nginx 主要能够代理如下几种协议，其中用到的最多的就是做Http代理服务器。<img src="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/01.jpg"></p>
+<h3 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h3><p>现在国内是访问不了 Google的，我们一般都是通过科学上网购买别人的服务器梯子或者自己买服务器搭梯子，我们又想为什么通过这种方式就可以上网呢？VPN 就是这样产生的。我们在访问 Google 时，先连上 VPN 服务器将我们的电脑的对外公网 IP 地址能变成美国的公网 IP 地址，然后就可以顺利的访问了。</p>
+<p>　这里的 VPN 就是做正向代理的。正向代理服务器位于客户端和服务器之间，为了向服务器获取数据，客户端要向代理服务器发送一个请求，并指定目标服务器，代理服务器将目标服务器返回的数据转交给客户端。这里客户端是要进行一些正向代理的设置的。</p>
+<p>PS：这里介绍一下什么是 VPN，VPN 通俗的讲就是一种中转服务，当我们电脑接入 VPN 后，我们对外 IP 地址就会变成 VPN 服务器的 公网 IP，我们请求或接受任何数据都会通过这个VPN 服务器然后传入到我们本机，你可以把它理解为一个类似于路由器一样的东西。这样做有什么好处呢？比如 VPN 游戏加速方面的原理，我们要玩网通区的，但是本机接入的是电信的宽带，玩网通区的会比较卡，这时候就利用 VPN 将电信网络变为网通网络，然后在玩网通区的时候就不会卡了（注意：VPN 是不能增加带宽的，不要以为不卡了是因为网速提升了）。</p>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>反向代理和正向代理的区别就是：<strong>正向代理代理客户端，反向代理代理服务器。</strong></p>
+<p>　　反向代理，其实客户端对代理是无感知的，因为客户端不需要任何配置就可以访问，我们只需要将请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据后，在返回给客户端，此时反向代理服务器和目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器IP地址。</p>
+<p>　　下面我们通过两张图来对比正向代理和方向代理：</p>
+<img src="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/02.jpg">
+
+<img src="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/03.jpg">
+
+<p>理解这两种代理的关键在于代理服务器所代理的对象是什么，正向代理代理的是客户端，我们需要在客户端进行一些代理的设置。而反向代理代理的是服务器，作为客户端的我们是无法感知到服务器的真实存在的。</p>
+<p>　　总结起来还是上面区别的那句话：<strong>正向代理代理客户端，反向代理代理服务器。</strong></p>
+<p>我们可以通过Tomcat来做一个小例子，加深对反向代理的理解</p>
+<p>1、启动一个Tomcat 浏览器输入 127.0.0.1:8080 会出现Tomcat的启动成功界面</p>
+<img src="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/04.jpg">
+
+<p>2、通过修改本地host文件，将<a href="http://www.123.com映射到" target="_blank" rel="noopener">www.123.com映射到</a> 127.0.0.1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1 www.123.com</span><br></pre></td></tr></table></figure>
+
+<p>将这段代码添加到本地的host文件最下面</p>
+<img src="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/05.jpg">
+
+<p>配置完成之后，我们便可以通过 <a href="http://www.123.com:8080" target="_blank" rel="noopener">www.123.com:8080</a> 访问到第一步出现的 Tomcat初始界面。</p>
+<p>那么我想只需要输入 <a href="http://www.123.com" target="_blank" rel="noopener">www.123.com</a> 便可以跳转到 Tomcat初始界面呢？这里便可以用到 nginx的反向代理。在Nginx中配置<a href="http://www.123.com" target="_blank" rel="noopener">www.123.com</a> 并监听80 端口</p>
+<p>找到 nginx.conf 配置文件 ，添加下面这段代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  www.123.com;</span><br><span class="line"></span><br><span class="line">        location &#x2F; &#123;</span><br><span class="line">            proxy_pass http:&#x2F;&#x2F;127.0.0.1:8080;</span><br><span class="line">            index  index.html index.htm index.jsp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>监听80端口，访问域名为<a href="http://www.123.com，不加端口号时默认为80端口，故访问该域名时会跳转到127.0.0.1:8080路径上。">www.123.com，不加端口号时默认为80端口，故访问该域名时会跳转到127.0.0.1:8080路径上。</a></p>
+<p>启动 nginx后，我们在浏览器端输入 <a href="http://www.123.com" target="_blank" rel="noopener">www.123.com</a> 结果如下：</p>
+<img src="/2020/03/31/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89/06.jpg">
+
+<p>原先我们是通过修改 本地host文件 并访问的是8080 端口，通过nginx代理之后，监听80端口也可以访问了。</p>
+<h4 id="Nginx反向代理相关指令介绍"><a href="#Nginx反向代理相关指令介绍" class="headerlink" title="Nginx反向代理相关指令介绍"></a>Nginx反向代理相关指令介绍</h4><h5 id="listen"><a href="#listen" class="headerlink" title="listen"></a>listen</h5><p>配置网络监听</p>
+<p>   1）、配置监听的IP地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">listen address[:port] [default_server] [setfib&#x3D;number] </span><br><span class="line">              [backlog&#x3D;number] [rcvbuf&#x3D;size] [sndbuf&#x3D;size] [deferred]</span><br><span class="line">              [accept_filter&#x3D;filter] [bind] [ssl];</span><br></pre></td></tr></table></figure>
+
+<p>​    2）、配置监听端口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">listen port[default_server] [setfib&#x3D;number] [backlog&#x3D;number] </span><br><span class="line">           [rcvbuf&#x3D;size] [sndbuf&#x3D;size] [accept_filter&#x3D;filter] </span><br><span class="line">           [deferred] [bind] [ipv6only&#x3D;on|off] [ssl];</span><br></pre></td></tr></table></figure>
+
+<p>   3）、配置 UNIX Domain Socket</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">listen unix:path [default_server]  [backlog&#x3D;number] [rcvbuf&#x3D;size] </span><br><span class="line">                 [sndbuf&#x3D;size] [accept_filter&#x3D;filter] [deferred] [bind] [ssl];</span><br></pre></td></tr></table></figure>
+
+<p>看起来有点复杂，实际使用其实很简单</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">listen *:80 | *:8080      #监听所有80端口和8080端口</span><br><span class="line">listen  IP_address:port   #监听指定的地址和端口号</span><br><span class="line">listen  IP_address        #监听指定ip地址所有端口</span><br><span class="line">listen port               #监听该端口的所有IP连接</span><br></pre></td></tr></table></figure>
+
+<p>上面各个选项所表示的具体含义</p>
+<p>​       1、address:IP地址，如果是 IPV6地址，需要使用中括号[] 括起来，比如[fe80::1]等。</p>
+<p>　　2、port:端口号，如果只定义了IP地址，没有定义端口号，那么就使用80端口。</p>
+<p>　　3、path:socket文件路径，如 var/run/nginx.sock等。</p>
+<p>　　4、default_server:标识符，将此虚拟主机设置为 address:port 的默认主机。（在 nginx-0.8.21 之前使用的是 default 指令）</p>
+<p>　　5、 setfib=number:Nginx-0.8.44 中使用这个变量监听 socket 关联路由表，目前只对 FreeBSD 起作用，不常用。</p>
+<p>　　6、backlog=number:设置监听函数listen()最多允许多少网络连接同时处于挂起状态，在 FreeBSD 中默认为 -1,其他平台默认为511.</p>
+<p>　　7、rcvbuf=size:设置监听socket接收缓存区大小。</p>
+<p>　　8、sndbuf=size:设置监听socket发送缓存区大小。</p>
+<p>　　9、deferred:标识符，将accept()设置为Deferred模式。</p>
+<p>　　10、accept_filter=filter:设置监听端口对所有请求进行过滤，被过滤的内容不能被接收和处理，本指令只在 FreeBSD 和 NetBSD 5.0+ 平台下有效。filter 可以设置为 dataready 或 httpready 。</p>
+<p>　　11、bind:标识符，使用独立的bind() 处理此address:port，一般情况下，对于端口相同而IP地址不同的多个连接，Nginx 服务器将只使用一个监听指令，并使用 bind() 处理端口相同的所有连接。</p>
+<p>　　12、ssl:标识符，设置会话连接使用 SSL模式进行，此标识符和Nginx服务器提供的 HTTPS 服务有关。</p>
+<h5 id="server-name"><a href="#server-name" class="headerlink" title="server_name"></a>server_name</h5><p>配置虚拟主机，但是通常分为两种</p>
+<p>1、基于名称的虚拟主机配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server_name name ...;</span><br></pre></td></tr></table></figure>
+
+<p>​       1）、对于name来说，可以只有一个名称，也可以有多个名称，中间用空格隔开。而每个名字由两端或者三段组成，每段之间用“.”隔开。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server_name 123.com www.123.com</span><br></pre></td></tr></table></figure>
+
+<p>​        2）、可以使用通配符 “ * “ ，但通配符只能用在由三段字符组成的首段或者尾段，或者由两段字符组成的尾段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server_name  *.123.com  www.123.*</span><br></pre></td></tr></table></figure>
+
+<p>​        3）、还可以使用正则表达式，用  “ ~ “ 作为正则表达式字符串的开始标记。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server_name ~^www\d+\.123\.com$;</span><br></pre></td></tr></table></figure>
+
+<p> 　该表达式“<del>”表示匹配正则表达式，以www开头（“^”表示开头），紧跟着一个0</del>9之间的数字，在紧跟“.123.co”，最后跟着“m”($表示结尾)</p>
+<p>　　以上匹配的顺序优先级如下：<br>        ①  准确匹配 server_name<br>        ②  通配符在开始时匹配  server_name<br>        ③  通配符在结尾时匹配  server_name<br>        ④  正则表达式匹配   server_name </p>
+<p>2、基于IP地址的虚拟主机配置</p>
+<p>语法结构和基于域名匹配一样，而且不需要考虑通配符和正则表达式的问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server_name 192.168.1.1</span><br></pre></td></tr></table></figure>
+
+<h5 id="location"><a href="#location" class="headerlink" title="location"></a>location</h5><p>用于匹配URL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location [ &#x3D; | ~ | ~* | ^~] uri &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　   1、= ：用于不含正则表达式的 uri 前，要求请求字符串与 uri 严格匹配，如果匹配成功，就停止继续向下搜索并立即处理该请求。</p>
+<p>　　2、~：用于表示 uri 包含正则表达式，并且区分大小写。</p>
+<p>　　3、~*：用于表示 uri 包含正则表达式，并且不区分大小写。</p>
+<p>　　4、^~：用于不含正则表达式的 uri 前，要求 Nginx 服务器找到标识 uri 和请求字符串匹配度最高的 location 后，立即使用此 location 处理请求，而不再使用 location 块中的正则 uri 和请求字符串做匹配。</p>
+<p>　　<strong>注意</strong>：如果 uri 包含正则表达式，则必须要有 ~ 或者 ~* 标识。</p>
+<h5 id="proxy-pass"><a href="#proxy-pass" class="headerlink" title="proxy_pass"></a>proxy_pass</h5><p>用于设置被代理服务器的地址。可以是主机名称、IP地址加端口号的形式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxy_pass URL;</span><br></pre></td></tr></table></figure>
+
+<p>URL 为被代理服务器的地址，可以包含传输协议、主机名称或IP地址加端口号，URI等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxy_pass  http:&#x2F;&#x2F;www.123.com&#x2F;uri;</span><br></pre></td></tr></table></figure>
+
+<h5 id="index"><a href="#index" class="headerlink" title="index"></a>index</h5><p>用于设置网站的默认首页。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">index file_name ...;</span><br></pre></td></tr></table></figure>
+
+<p>　　后面的文件名称可以有多个，中间用空格隔开。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">index  index.html index_02.html;</span><br></pre></td></tr></table></figure>
+
+<p>通常这个指令有两个作用：第一个是用户在请求访问网站时，请求地址可以不写首页名称；第二个是可以对一个请求，根据请求内容而设置不同的首页。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/30/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" rel="prev" title="Nginx学习（一）">
+      <i class="fa fa-chevron-left"></i> Nginx学习（一）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Conf配置文件详解"><span class="nav-number">1.</span> <span class="nav-text">Conf配置文件详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理"><span class="nav-number">2.</span> <span class="nav-text">代理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正向代理"><span class="nav-number">2.1.</span> <span class="nav-text">正向代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反向代理"><span class="nav-number">2.2.</span> <span class="nav-text">反向代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Nginx反向代理相关指令介绍"><span class="nav-number">2.2.1.</span> <span class="nav-text">Nginx反向代理相关指令介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#listen"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">listen</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#server-name"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">server_name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#location"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">location</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#proxy-pass"><span class="nav-number">2.2.1.4.</span> <span class="nav-text">proxy_pass</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#index"><span class="nav-number">2.2.1.5.</span> <span class="nav-text">index</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张城子"
+      src="/images/touxiang.gif">
+  <p class="site-author-name" itemprop="name">张城子</p>
+  <div class="site-description" itemprop="description">时代的一粒灰尘落在个人头上，就是一座山</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangchengzi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangchengzi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1069267387@qq.com" title="E-Mail → mailto:1069267387@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张城子</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//code.tidio.co/yo54advhndcyeujqgvq3i0x6wcio3rrq.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '5OeoaeYEyVohLkLvXS9xkFdu-gzGzoHsz',
+    appKey: 'NBYQJovhWRuLLaWxLeKWHOvT',
+    placeholder: "ヾﾉ≧∀≦)o来啊，快活啊!",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+
+  
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+  <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+  <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+</body>
+</html>
