@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="前言：大学学习了的Oracle，毕业之后就动过寥寥数次，后面一直用SqlServer MySql，最近重新复习Oracle的面试题，就一边看写一边个笔记上Blog交作业。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Oracle整理（一）">
+<meta property="og:url" content="http://yoursite.com/2020/03/29/Oracle%E6%95%B4%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="一度灰">
+<meta property="og:description" content="前言：大学学习了的Oracle，毕业之后就动过寥寥数次，后面一直用SqlServer MySql，最近重新复习Oracle的面试题，就一边看写一边个笔记上Blog交作业。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-29T15:23:13.000Z">
+<meta property="article:modified_time" content="2020-04-11T14:12:29.543Z">
+<meta property="article:author" content="张城子">
+<meta property="article:tag" content="Oracle">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/29/Oracle%E6%95%B4%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Oracle整理（一） | 一度灰</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+<script src="//code.tidio.co/yo54advhndcyeujqgvq3i0x6wcio3rrq.js" async></script>
+<script type="text/javascript" src="/js/src/sakura.js"></script>
+<script type="text/javascript" src="/js/src/ribbon.js"></script>
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一度灰</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">没有完美的人生，不完美才是人生</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/29/Oracle%E6%95%B4%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang.gif">
+      <meta itemprop="name" content="张城子">
+      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一度灰">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Oracle整理（一）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-29 23:23:13" itemprop="dateCreated datePublished" datetime="2020-03-29T23:23:13+08:00">2020-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-11 22:12:29" itemprop="dateModified" datetime="2020-04-11T22:12:29+08:00">2020-04-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Oracle/" itemprop="url" rel="index">
+                    <span itemprop="name">Oracle</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/29/Oracle%E6%95%B4%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/" class="post-meta-item leancloud_visitors" data-flag-title="Oracle整理（一）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/29/Oracle%E6%95%B4%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/29/Oracle%E6%95%B4%E7%90%86%EF%BC%88%E4%B8%80%EF%BC%89/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>前言：</strong>大学学习了的Oracle，毕业之后就动过寥寥数次，后面一直用SqlServer MySql，最近重新复习Oracle的面试题，就一边看写一边个笔记上Blog交作业。</p>
+<a id="more"></a>
+
+<h5 id="1、对数据库SQLServer2005、Oracle熟悉吗？"><a href="#1、对数据库SQLServer2005、Oracle熟悉吗？" class="headerlink" title="1、对数据库SQLServer2005、Oracle熟悉吗？"></a>1、对数据库SQLServer2005、Oracle熟悉吗？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SQLServer2005是Microsoft 公司的数据库产品。是一个RDBMS数据库，一般用在一些中型数据库的产品应用上。不能跨平台</span><br><span class="line">Oracle 是ORACLE 公司的数据库产品，支持海量数据库存储，支持分布式部署，支持多用户，跨平台，数据库安全完整性控制性能优越，是一个ORDBMS,一般用在大型公司。</span><br></pre></td></tr></table></figure>
+
+<h5 id="2、什么是RDBMS，ORDBMS"><a href="#2、什么是RDBMS，ORDBMS" class="headerlink" title="2、什么是RDBMS，ORDBMS"></a>2、什么是RDBMS，ORDBMS</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RDBMS的全拼是Relational Database Management System，从字面上可以理解为关系数据库管理系统。</span><br><span class="line">它是SQL的基础，对于像MS SQLServer，IBM DB2，Oracle，MySQL和Microsoft Access等所有现代数据库系统。</span><br><span class="line">这两者的概念区别：</span><br><span class="line">一个是关系数据库管理系统(RDBMS)一个是数据库管理系统(DBMS)，基于关系模型如通过 E. F. Codd 引入。</span><br><span class="line"></span><br><span class="line">ORDBMS（Object Relational Database Management System） 对象关系数据库系统在实质上还是关系数据库</span><br></pre></td></tr></table></figure>
+
+<h5 id="3、一般用什么工具设计数据库，如何实现数据库的导入与到导出的更新"><a href="#3、一般用什么工具设计数据库，如何实现数据库的导入与到导出的更新" class="headerlink" title="3、一般用什么工具设计数据库，如何实现数据库的导入与到导出的更新"></a>3、一般用什么工具设计数据库，如何实现数据库的导入与到导出的更新</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">业内一般使用 POWERDISINE 工具设计数据库 ，一般满足第三范式就可以。</span><br><span class="line"></span><br><span class="line">EXP和IMP命令操作数据库的逻辑导入与导出</span><br><span class="line">exp导出方式：</span><br><span class="line"></span><br><span class="line">1\导出用户自身拥有的表并带有数据： 导出自己的表到data-bak目录下。</span><br><span class="line">语法：exp userid&#x3D;uname&#x2F;pwd tables&#x3D;table-name file&#x3D;&#x2F;data-bak&#x2F;table-name.dmp;</span><br><span class="line"></span><br><span class="line">2\只导出表结构</span><br><span class="line">语法：exp userid&#x3D;uname&#x2F;pwd  tables&#x3D;table-name  file&#x3D;&#x2F;home&#x2F;data-bak&#x2F;table-name.dmp rows&#x3D;n;</span><br><span class="line"></span><br><span class="line">3\导出其它用户的表或者表结构(只有管理员或者具有DBA权限的用户可以操作)</span><br><span class="line">语法：exp userid&#x3D;uname&#x2F;pwd tables&#x3D;table-name file&#x3D;&#x2F;home&#x2F;oracle&#x2F;data-back&#x2F;table-name.dmp</span><br><span class="line"></span><br><span class="line">4\导出用户自身的方案，此命令会将该用户下的表 视图 同义词 存储过程之类的数据全部导出。</span><br><span class="line">语法：exp userid&#x3D;uname&#x2F;pwd owner&#x3D;uname file&#x3D;&#x2F;home&#x2F;oracle&#x2F;data-bak&#x2F;table-name.dmp;</span><br><span class="line"></span><br><span class="line">5\导出整个数据库,导出整个库的过程很慢。</span><br><span class="line">语法：exp userid&#x3D;system&#x2F;manager full&#x3D;y  </span><br><span class="line">     inctype&#x3D;complete file&#x3D;&#x2F;home&#x2F;oracle&#x2F;data-bak&#x2F;database.dmp;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">imp导入与导出类似，这里只写一个导入表操作。</span><br><span class="line">导入自身的表</span><br><span class="line">语法：imp userid&#x3D;uname&#x2F;pwd tables&#x3D;ce file&#x3D;&#x2F;home&#x2F;oracle&#x2F;data-bak&#x2F;ce.dmp;</span><br><span class="line"></span><br><span class="line">扩：</span><br><span class="line">数据库的导入与更新一般都涉及到Oracle备份，oracle备份方式有两种：</span><br><span class="line">1.物理备份</span><br><span class="line">物理备份是将数据库的数据文件拷贝到服务器或者其它介质上。当数据库出现问题时直接从服务器或者介质上面拷贝回来。</span><br><span class="line">2.逻辑备份</span><br><span class="line">逻辑备份主要是利用导入导出工具进行备份与恢复的操作。</span><br><span class="line">3.两种备份共同点与不同点：</span><br><span class="line">物理备份可在数据库open的状态下进行，也可以在关闭数据库后进行。</span><br><span class="line">逻辑备份和恢复只能在open的状态下进行。</span><br><span class="line">exp   expdp   imp impdp只能在数据库open的状态下进行备份，</span><br><span class="line">在数据库打开的状态下逻辑备份和物理备份都可以。</span><br></pre></td></tr></table></figure>
+
+<h5 id="3、1-数据库的三大范式"><a href="#3、1-数据库的三大范式" class="headerlink" title="3、1 数据库的三大范式"></a>3、1 数据库的三大范式</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1NF:每个属性是不可分的。</span><br><span class="line">2NF:若关系R是１NF,且每个非主属性都完全函数依赖于R的键。</span><br><span class="line">例SLC(SID#, CourceID#, SNAME,Grade),则不是2NF;</span><br><span class="line">3NF:若R是2NF，且它的任何非键属性都不传递依赖于任何候选键。</span><br></pre></td></tr></table></figure>
+
+<h5 id="4、如何只显示重复数据，或者不显示重复数据？"><a href="#4、如何只显示重复数据，或者不显示重复数据？" class="headerlink" title="4、如何只显示重复数据，或者不显示重复数据？"></a>4、如何只显示重复数据，或者不显示重复数据？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">显示重复数据： SELECT * FROM TABLE_NAME GROUP BY I_D HAVING COUNT(*)&gt;1</span><br><span class="line">不显示重复数据： SELECT * FROM TABLE_NAME GROUP BY I_D HAVING COUNT(*)&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<h5 id="5、SQL分页有哪些方法？如何用存储过程写一个分页？用一个SQL语句写一个分页"><a href="#5、SQL分页有哪些方法？如何用存储过程写一个分页？用一个SQL语句写一个分页" class="headerlink" title="5、SQL分页有哪些方法？如何用存储过程写一个分页？用一个SQL语句写一个分页"></a>5、SQL分页有哪些方法？如何用存储过程写一个分页？用一个SQL语句写一个分页</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">在SQLSERVER中使用TOP分页，在ORACLE中用ROWNUM，或分析函数ROW_NUMBER，在MYSQL中用LIMT分页</span><br><span class="line">使用TOP分页：</span><br><span class="line">SELECT TOP 20,n.* FROM TABLE_NAME N </span><br><span class="line">MINUS </span><br><span class="line">SELECT TOP 10,m.* FROM TABLE_NAME M</span><br><span class="line">[注意：] MINUS指令是运用在两个SQL语句上。</span><br><span class="line">它先找出第一个SQL语句所产生的结果，然后看这些结果有没有在第二个SQL语句的结果中。</span><br><span class="line">如果有的话，那这一笔资料就被去除，而不会在最后的结果中出现。</span><br><span class="line">如果第二个SQL语句所产生的结果并没有存在于第一个SQL语句所产生的结果内，那这笔资料就被抛弃。</span><br><span class="line"></span><br><span class="line">使用分析函数ROW_NUMBER</span><br><span class="line">SELECT *FROM (SELECT N.*,ROW_NUMBER() OVER(ORDER BY COLUMN_NAME)NUM FROM TABLE_NAME n )</span><br><span class="line">使用过程中，只要将分页的范围用两个参数就可以实现。在ORACLE中，要将过程封装在包里，还要用动态游标变量才能实现数据集的返回。</span><br><span class="line"></span><br><span class="line">至于如何用存储过程写一个分页，我真的太久没写了，等下次写好再更新叭......</span><br></pre></td></tr></table></figure>
+
+<h5 id="6、ORACLE-中左连接、右连接"><a href="#6、ORACLE-中左连接、右连接" class="headerlink" title="6、ORACLE 中左连接、右连接"></a>6、ORACLE 中左连接、右连接</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">左连接： LEFT JOIN 右连接： RIGHT JOIN</span><br><span class="line">SELECT n.COLUMN_NAME,m.COLUMN_NAME </span><br><span class="line">FROM TABLE_NAME_1 n LEFT JOIN TABLE_NAME_2 m</span><br><span class="line">ON n.COLUMN_NAME&#x3D;m.COLUMN_NAME</span><br><span class="line">用 WHERE 实现</span><br><span class="line">SELECT n.COLUMN_NAME,m.COLUMN_NAME </span><br><span class="line">FROM TABLE_NAME_1 n,TABLE_NAME_2 m</span><br><span class="line">WHERE n.COLUMN_NAME(+)&#x3D;m.COLUMN_NAME</span><br><span class="line"></span><br><span class="line">上面两个语法使用 左连接 LEFT JOIN 替换成 如果要右连接，</span><br><span class="line">把关键字换了就行，这里要说明的是关于左连接和右连接的两个概念。以及扩展的内连接和外连接</span><br><span class="line">1）、基础表不同</span><br><span class="line">a、左连接：左连接的基础表为left join左侧数据表,返回包括左表中的所有记录和右表中连接字段相等的记录。</span><br><span class="line">b、右连接：右连接的基础表为right join右侧数据表,返回包括右表中的所有记录和左表中连接字段相等的记录。</span><br><span class="line"></span><br><span class="line">2）、[扩展] 假设有 A B 两张表</span><br><span class="line">a、inner join （等值连接或者叫内连接）：只返回两个表中连接字段相等的行。（只有2张表匹配的行才能显示）</span><br><span class="line">  例子：select a.name,b.job from A a  inner join B b on a.id&#x3D;b.A_id</span><br><span class="line">  </span><br><span class="line">b、full join （全外连接）：返回左右表中所有的记录和左右表中连接字段相等的记录。(左右2张表都不加限制）</span><br><span class="line">  例子：select a.name,b.job from A a  full join B b on a.id&#x3D;b.A_id</span><br></pre></td></tr></table></figure>
+
+<h5 id="7、什么是反射、序列化、反序列化？事务有几种级别？"><a href="#7、什么是反射、序列化、反序列化？事务有几种级别？" class="headerlink" title="7、什么是反射、序列化、反序列化？事务有几种级别？"></a>7、什么是反射、序列化、反序列化？事务有几种级别？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">反射是在程序运行时动态访问DDL的一种方式。</span><br><span class="line">序列化是将对象对二进制、XML等方式直接向文件的存储。</span><br><span class="line">反序列化是将存储到文件的对象取出的过程。</span><br><span class="line">事务的级别的三种：页面级、应用程序级、数据库级。</span><br></pre></td></tr></table></figure>
+
+<h5 id="8、数据测试如何测试？"><a href="#8、数据测试如何测试？" class="headerlink" title="8、数据测试如何测试？"></a>8、数据测试如何测试？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">在PLSQL里对存储过程或函数可能会通过专用的测试工具进行测试，</span><br><span class="line">通过专门准备的海量数据对存储过程或者函数进行性能测试。</span><br></pre></td></tr></table></figure>
+
+<h5 id="9、用事务的时候，如果在业务逻辑层中，调用数据库访问层中的方法，访问层中有很多类，类又有很多方法，每个方法都要实现，那么如何处理？"><a href="#9、用事务的时候，如果在业务逻辑层中，调用数据库访问层中的方法，访问层中有很多类，类又有很多方法，每个方法都要实现，那么如何处理？" class="headerlink" title="9、用事务的时候，如果在业务逻辑层中，调用数据库访问层中的方法，访问层中有很多类，类又有很多方法，每个方法都要实现，那么如何处理？"></a>9、用事务的时候，如果在业务逻辑层中，调用数据库访问层中的方法，访问层中有很多类，类又有很多方法，每个方法都要实现，那么如何处理？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">通用数据访问层的实现？？？（你特喵的能说具体一点吗）</span><br><span class="line">容我思考一下，再更新这个答案......</span><br></pre></td></tr></table></figure>
+
+<h5 id="9-1、什么是事务？"><a href="#9-1、什么是事务？" class="headerlink" title="9.1、什么是事务？"></a>9.1、什么是事务？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">事务：是一系列的数据库操作，是数据库应用的基本逻辑单位。</span><br><span class="line">事务性质：原子性、一致性、隔离性、持久性</span><br><span class="line">原子性：即不可分割性，事务要么全部被执行，要么就全部不被执行。</span><br><span class="line">一致性：事务的执行使得数据库从一种正确状态转换成另一种正确状态</span><br><span class="line">隔离性：在事务正确提交之前，不允许把该事务对数据的任何改变提供给任何其他事务，</span><br><span class="line">持久性：事务正确提交后，其结果将永久保存在数据库中，</span><br><span class="line">       即使在事务提交后有了其他故障，事务的处理结果也会得到保存。</span><br></pre></td></tr></table></figure>
+
+<h5 id="9-3、什么是存储过程？为什么用存储过程（有哪些优点）？"><a href="#9-3、什么是存储过程？为什么用存储过程（有哪些优点）？" class="headerlink" title="9.3、什么是存储过程？为什么用存储过程（有哪些优点）？"></a>9.3、什么是存储过程？为什么用存储过程（有哪些优点）？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">存储过程：存储过程就是已经编译好了的一大段sql语句放到一个类似于代码包里的sql语句。</span><br><span class="line">1.存储过程因为SQL语句已经预编绎过了，因此运行的速度比较快。</span><br><span class="line">2.可以保证数据的安全性和完整性。通过存储过程可以使没有权限的用户在控制之下间接地存取数据库。</span><br><span class="line">  从而保证数据的安全。通过存储过程可以使相关的动作在一起发生，从而可以维护数据库的完整性。</span><br><span class="line">3.可以降低网络的通信量。存储过程主要是在服务器上运行，减少对客户机的压力。</span><br><span class="line">4：存储过程可以接受参数、输出参数、返回单个或多个结果集以及返回值。可以向程序返回错误原因</span><br><span class="line">5：存储过程可以包含程序流、逻辑以及对数据库的查询。同时可以实体封装和隐藏了数据逻辑。</span><br></pre></td></tr></table></figure>
+
+<h5 id="10、什么时候会用到触发器"><a href="#10、什么时候会用到触发器" class="headerlink" title="10、什么时候会用到触发器"></a>10、什么时候会用到触发器</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">触发器（trigger）是个特殊的存储过程，它的执行不是由程序调用，也不是手工启动，而是由事件来触发，</span><br><span class="line">比如当对一个表进行操作（ insert，delete， update）时就会激活它执行。触发器经常用于加强数据的完整性约束和业务规则等。 触发器可以从 DBA_TRIGGERS ，USER_TRIGGERS 数据字典中查到。</span><br><span class="line"></span><br><span class="line">另外在做 安全管理、日志管理、复杂业务逻辑实现的时候都会使用到触发器</span><br><span class="line"></span><br><span class="line">触发器的优点</span><br><span class="line">触发器可通过数据库中的相关表实现级联更改，不过，通过级联引用完整性约束可以更有效地执行这些更改。</span><br><span class="line">触发器可以强制比用CHECK约束定义的约束更为复杂的约束。与 CHECK 约束不同，触发器可以引用其它表中的列。</span><br><span class="line">例如，触发器可以使用另一个表中的 SELECT 比较插入或更新的数据，以及执行其它操作，</span><br><span class="line">如修改数据或显示用户定义错误信息。触发器也可以评估数据修改前后的表状态，</span><br><span class="line">并根据其差异采取对策。一个表中的多个同类触发器（INSERT、UPDATE 或 DELETE）</span><br><span class="line">允许采取多个不同的对策以响应同一个修改语句</span><br></pre></td></tr></table></figure>
+
+<h5 id="11、如何在数据库中显示树控制？"><a href="#11、如何在数据库中显示树控制？" class="headerlink" title="11、如何在数据库中显示树控制？"></a>11、如何在数据库中显示树控制？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">用父ID和子ID来实现</span><br><span class="line">Oracle 9i 开始，可以通过 SYS_CONNECT_BY_PATH 函数实现将从父节点到</span><br><span class="line">当前行内容以“path”或者层次元素列表的形式显示出来。</span><br><span class="line"></span><br><span class="line">Oracle 10g 开始，可以使用 START WITH . . . CONNECT BY . . .</span><br><span class="line">主从句可将父级与子级连接起来，并将其层次等级以树状显示出来。 </span><br><span class="line"></span><br><span class="line">Oracle 10g 中的新特性——CONNECT_BY_ROOT。 它用在列名之前用于返回当前层的根节点。</span><br><span class="line">在Oracle 10g 之前的版本中，如果在你的树中出现了环状循环（如一个孩子节点引用一个父亲节点），</span><br><span class="line">Oracle 就会报出一个错误提示：</span><br><span class="line">“ ORA-01436: CONNECT BY loop in user data”。如果不删掉对父亲的引用就无法执行查询操作。</span><br><span class="line">而在 Oracle 10g 中，只要指定“NOCYCLE”就可以进行任意的查询操作。</span><br><span class="line">与这个关键字相关的还有一个伪列——CONNECT_BY_ISCYCLE， </span><br><span class="line">如果在当前行中引用了某个父亲节点的内容并在树中出现了循环，那么该行的伪列中就会显示“1”，</span><br><span class="line">否则就显示“0”。而这个功能就可以帮助我们校验一直让我们头疼不已的BOM结构死循环（大多由于数据导入形成的）</span><br></pre></td></tr></table></figure>
+
+<h5 id="12、如何实现数据库的优化？"><a href="#12、如何实现数据库的优化？" class="headerlink" title="12、如何实现数据库的优化？"></a>12、如何实现数据库的优化？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">A、调整数据结构的设计。这一部分在开发信息系统之前完成，</span><br><span class="line">程序员需要考虑是否使用ORACLE数据库的分区功能，</span><br><span class="line">对于经常访问的数据库表是否需要建立索引等。</span><br><span class="line"></span><br><span class="line">B、调整应用程序结构设计。这一部分也是在开发信息系统之前完成，</span><br><span class="line">程序员在这一步需要考虑应用程序使用什么样的体系结构，</span><br><span class="line">是使用传统的Client&#x2F;Server两层体系结构，还是使用Browser&#x2F;Web&#x2F;Database的三层体系结构。</span><br><span class="line">不同的应用程序体系结构要求的数据库资源是不同的。</span><br><span class="line"></span><br><span class="line">C、调整数据库SQL语句。应用程序的执行最终将归结为数据库中的SQL语句执行，</span><br><span class="line">因此SQL语句的执行效率最终决定了ORACLE数据库的性能。</span><br><span class="line">ORACLE公司推荐使用ORACLE语句优化器（OracleOptimizer）和行锁管理器（row-levelmanager）来调整优化SQL语句。</span><br><span class="line"></span><br><span class="line">D、调整服务器内存分配。内存分配是在信息系统运行过程中优化配置的，</span><br><span class="line">数据库管理员可以根据数据库运行状况调整数据库系统全局区（SGA区）的数据缓冲区、日志缓冲区和共享池的大小；</span><br><span class="line">还可以调整程序全局区（PGA区）的大小。需要注意的是，SGA区不是越大越好，</span><br><span class="line">SGA区过大会占用操作系统使用的内存而引起虚拟内存的页面交换，这样反而会降低系统性能。</span><br><span class="line"></span><br><span class="line">E、调整硬盘I&#x2F;O，这一步是在信息系统开发之前完成的。</span><br><span class="line">数据库管理员可以将组成同一个表空间的数据文件放在不同的硬盘上，做到硬盘之间I&#x2F;O负载均衡。</span><br><span class="line"></span><br><span class="line">F、调整操作系统参数</span><br><span class="line">例如：运行在UNIX操作系统上的ORACLE数据库，可以调整UNIX</span><br><span class="line">数据缓冲池的大小，每个进程所能使用的内存大小等参数。</span><br></pre></td></tr></table></figure>
+
+<h5 id="13、如何使用Oracle的游标？"><a href="#13、如何使用Oracle的游标？" class="headerlink" title="13、如何使用Oracle的游标？"></a>13、如何使用Oracle的游标？</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">游标（Cursor）</span><br><span class="line">在写java程序中有集合的概念，那么在pl&#x2F;sql中也会用到多条记录，这时候要用到游标，游标可以存储查询返回的多条数据</span><br><span class="line">语法：</span><br><span class="line">CURSOR 游标名 [(参数名 数据类型， 参数名 数据类型…)] IS SELECT 语句；</span><br><span class="line">例如：cursor c1 is select ename from emp;</span><br><span class="line">游标的使用步骤：</span><br><span class="line">1、打开游标： open c1;（打开游标执行查询）</span><br><span class="line">取一行游标的值: fetch c1 into pjob;（取一行到变量中）</span><br><span class="line">2、关闭游标：close c1;（关闭游标释放资源）</span><br><span class="line">游标的结束方式 exit when c1 %notfound</span><br><span class="line"></span><br><span class="line">注意：上面的pjob必须与emp表中的job列类型一致</span><br><span class="line">定义：pjob emp.empjob%type;</span><br><span class="line"></span><br><span class="line">示例：不带参数的游标</span><br><span class="line">declare </span><br><span class="line">   --定义光标（游标）</span><br><span class="line">   --CURSOR 游标名 [(参数名 数据类型， 参数名 数据类型…)] IS SELECT 语句；</span><br><span class="line">   cursor cemp is select ename,sal from emp;</span><br><span class="line">   -- 定义字段</span><br><span class="line">   pename emp.ename%type; -- 姓名</span><br><span class="line">   psal   emp.sal%type;  -- 薪水</span><br><span class="line">--开始</span><br><span class="line">begin</span><br><span class="line">  --打开</span><br><span class="line">  open cemp;</span><br><span class="line">  --开始</span><br><span class="line">  loop</span><br><span class="line">       --取当前记录</span><br><span class="line">       fetch cemp into pename,psal;</span><br><span class="line">       --exit when 没有取到记录;</span><br><span class="line">       exit when cemp%notfound;</span><br><span class="line"></span><br><span class="line">       --取道结果，然后输出</span><br><span class="line">       dbms_output.put_line(pename||&#39;的薪水是&#39;||psal);</span><br><span class="line">  --结束</span><br><span class="line">  end loop;</span><br><span class="line"></span><br><span class="line">  --关闭</span><br><span class="line">  close cemp;</span><br><span class="line">--结束</span><br><span class="line">end;</span><br><span class="line">&#x2F;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">示例2：带参数的游标</span><br><span class="line"></span><br><span class="line">-- 查询某个部门的员工姓名</span><br><span class="line">declare </span><br><span class="line">   --形参</span><br><span class="line">   --CURSOR 游标名 [(参数名 数据类型， 参数名 数据类型…)] IS SELECT 语句；</span><br><span class="line">   cursor cemp(dno number) is select ename from emp where deptno&#x3D;dno;</span><br><span class="line">   -- 姓名字段</span><br><span class="line">   pename emp.ename%type; </span><br><span class="line">begin</span><br><span class="line">   --实参</span><br><span class="line">   open cemp(20);</span><br><span class="line">   --开始</span><br><span class="line">   loop</span><br><span class="line">        --取当前记录</span><br><span class="line">        fetch cemp into pename;</span><br><span class="line">        --exit when 没有取到记录;</span><br><span class="line">        exit when cemp%notfound;</span><br><span class="line">        --取道记录，输出结果</span><br><span class="line">        dbms_output.put_line(pename);</span><br><span class="line"></span><br><span class="line">  --结束</span><br><span class="line">   end loop;</span><br><span class="line">   </span><br><span class="line">   --关闭</span><br><span class="line">   close cemp;</span><br><span class="line">end;</span><br><span class="line">&#x2F;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Oracle/" rel="tag"># Oracle</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/28/SQL%E4%BC%98%E5%8C%96%EF%BC%88%E4%B8%89%EF%BC%89/" rel="prev" title="SQL优化（三）">
+      <i class="fa fa-chevron-left"></i> SQL优化（三）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/30/Nginx%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" rel="next" title="Nginx学习（一）">
+      Nginx学习（一） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1、对数据库SQLServer2005、Oracle熟悉吗？"><span class="nav-number">1.</span> <span class="nav-text">1、对数据库SQLServer2005、Oracle熟悉吗？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2、什么是RDBMS，ORDBMS"><span class="nav-number">2.</span> <span class="nav-text">2、什么是RDBMS，ORDBMS</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、一般用什么工具设计数据库，如何实现数据库的导入与到导出的更新"><span class="nav-number">3.</span> <span class="nav-text">3、一般用什么工具设计数据库，如何实现数据库的导入与到导出的更新</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3、1-数据库的三大范式"><span class="nav-number">4.</span> <span class="nav-text">3、1 数据库的三大范式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4、如何只显示重复数据，或者不显示重复数据？"><span class="nav-number">5.</span> <span class="nav-text">4、如何只显示重复数据，或者不显示重复数据？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5、SQL分页有哪些方法？如何用存储过程写一个分页？用一个SQL语句写一个分页"><span class="nav-number">6.</span> <span class="nav-text">5、SQL分页有哪些方法？如何用存储过程写一个分页？用一个SQL语句写一个分页</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6、ORACLE-中左连接、右连接"><span class="nav-number">7.</span> <span class="nav-text">6、ORACLE 中左连接、右连接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7、什么是反射、序列化、反序列化？事务有几种级别？"><span class="nav-number">8.</span> <span class="nav-text">7、什么是反射、序列化、反序列化？事务有几种级别？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8、数据测试如何测试？"><span class="nav-number">9.</span> <span class="nav-text">8、数据测试如何测试？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9、用事务的时候，如果在业务逻辑层中，调用数据库访问层中的方法，访问层中有很多类，类又有很多方法，每个方法都要实现，那么如何处理？"><span class="nav-number">10.</span> <span class="nav-text">9、用事务的时候，如果在业务逻辑层中，调用数据库访问层中的方法，访问层中有很多类，类又有很多方法，每个方法都要实现，那么如何处理？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-1、什么是事务？"><span class="nav-number">11.</span> <span class="nav-text">9.1、什么是事务？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-3、什么是存储过程？为什么用存储过程（有哪些优点）？"><span class="nav-number">12.</span> <span class="nav-text">9.3、什么是存储过程？为什么用存储过程（有哪些优点）？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10、什么时候会用到触发器"><span class="nav-number">13.</span> <span class="nav-text">10、什么时候会用到触发器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11、如何在数据库中显示树控制？"><span class="nav-number">14.</span> <span class="nav-text">11、如何在数据库中显示树控制？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#12、如何实现数据库的优化？"><span class="nav-number">15.</span> <span class="nav-text">12、如何实现数据库的优化？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#13、如何使用Oracle的游标？"><span class="nav-number">16.</span> <span class="nav-text">13、如何使用Oracle的游标？</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张城子"
+      src="/images/touxiang.gif">
+  <p class="site-author-name" itemprop="name">张城子</p>
+  <div class="site-description" itemprop="description">时代的一粒灰尘落在个人头上，就是一座山</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangchengzi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangchengzi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1069267387@qq.com" title="E-Mail → mailto:1069267387@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张城子</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  <script src="//code.tidio.co/yo54advhndcyeujqgvq3i0x6wcio3rrq.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '5OeoaeYEyVohLkLvXS9xkFdu-gzGzoHsz',
+    appKey: 'NBYQJovhWRuLLaWxLeKWHOvT',
+    placeholder: "ヾﾉ≧∀≦)o来啊，快活啊!",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+
+  
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+  <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+  <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+</body>
+</html>

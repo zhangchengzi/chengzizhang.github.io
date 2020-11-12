@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="HashMap底层是基于哈希表实现的键值对存储，继承AbstractMap并实现了Map接口，HashMap基于hashing原理，通过put() 和 get()方法存储和获取对象。当我们将键值对传递给put()方法时，它调用键值对象hashCode()方法来计算hashCode，然后找到bucket（桶）位置来存储值对象。当获取对象时，通过健对象的equals()方法找到正确的键值对，然后返回值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HashMap简述">
+<meta property="og:url" content="http://yoursite.com/2020/03/17/HashMap%E7%AE%80%E8%BF%B0/index.html">
+<meta property="og:site_name" content="一度灰">
+<meta property="og:description" content="HashMap底层是基于哈希表实现的键值对存储，继承AbstractMap并实现了Map接口，HashMap基于hashing原理，通过put() 和 get()方法存储和获取对象。当我们将键值对传递给put()方法时，它调用键值对象hashCode()方法来计算hashCode，然后找到bucket（桶）位置来存储值对象。当获取对象时，通过健对象的equals()方法找到正确的键值对，然后返回值">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-17T00:51:11.000Z">
+<meta property="article:modified_time" content="2020-04-11T14:10:13.546Z">
+<meta property="article:author" content="张城子">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/17/HashMap%E7%AE%80%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>HashMap简述 | 一度灰</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+<script src="//code.tidio.co/yo54advhndcyeujqgvq3i0x6wcio3rrq.js" async></script>
+<script type="text/javascript" src="/js/src/sakura.js"></script>
+<script type="text/javascript" src="/js/src/ribbon.js"></script>
+
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一度灰</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">没有完美的人生，不完美才是人生</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/17/HashMap%E7%AE%80%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang.gif">
+      <meta itemprop="name" content="张城子">
+      <meta itemprop="description" content="时代的一粒灰尘落在个人头上，就是一座山">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一度灰">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HashMap简述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-17 08:51:11" itemprop="dateCreated datePublished" datetime="2020-03-17T08:51:11+08:00">2020-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-11 22:10:13" itemprop="dateModified" datetime="2020-04-11T22:10:13+08:00">2020-04-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/17/HashMap%E7%AE%80%E8%BF%B0/" class="post-meta-item leancloud_visitors" data-flag-title="HashMap简述" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/17/HashMap%E7%AE%80%E8%BF%B0/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/17/HashMap%E7%AE%80%E8%BF%B0/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><p>底层是基于哈希表实现的键值对存储，继承AbstractMap并实现了Map接口，HashMap基于hashing原理，通过put() 和 get()方法存储和获取对象。<br>当我们将键值对传递给put()方法时，它调用键值对象hashCode()方法来计算hashCode，然后找到bucket（桶）位置来存储值对象。当获取对象时，通过健对象的equals()方法找到正确的键值对，然后返回值对象。</p>
+<p>HashMap 使用LinkedList来解决碰撞问题。当发生碰撞，对象将会存储在LinkedList的下一个节点中。</p>
+<p><strong>简单介绍一下hashcode()？</strong><br>hashcode就是通过hash函数计算得来的值，返回的是int类型</p>
+  <a id="more"></a>
+
+<p><strong>当两个不同键对象的hashCode相同时会发生什么？</strong></p>
+<p>他们会存储在同一个bucket（散列桶）位置的LinkedList中。键对象的equals()方法用来找到键值对。</p>
+<p><strong>nitialCapacity</strong>： 初始容量。指的是HashMap 集合初始化的时候自身的容量。可以在构造方法中指定。如果不指定的话，总容量默认值是16 .需要注意的是初始容量必须是2的幂次方</p>
+<p><strong>size</strong> ： 当前HashMap中已经存储着的键值对数量 </p>
+<p><strong>loadFactor</strong>: 加载因子。所谓的加载因子就是HashMap(当前的容量/总容量)达到一定值的时候，HashMap 会实施扩容。加载因子也可以通过构造方法中指定，默认的值是 0.75  .</p>
+<p><strong>threshold</strong> ： 扩容阈值，即 扩容阈值 = HashMap 总容量  *  加载因子。 当前HashMap的容量大于或等于扩容阈值的时候就回去执行扩容。扩容的容量为当前HashMap 总容量的两倍。比如，当前 HashMap 的总容量 为 16  ，那么扩容之后为32.</p>
+<p>举个例子：<br>          假设有一个HashMap 集合初始容量为<strong>16  ，</strong>那么扩容的阈值就是 0.75 * 16 = 12 . 也就是说，在你打算存入第13个值的时候，HashMap 会先执行扩容。</p>
+<p><strong>Java JDK 1.7之前</strong>  HashMap 的实现方式是 Entry 数组+ 链表的形式。<strong>java 1.7 会在链表头插入（头插法）</strong>，使用头插法会造成一个问题，是当它在resize的时候，也就是说hashmap的扩容的过程，它的里面有一个 resize（）方法，然后它又调用了一个   transfer（） 方法，把里面的Entry进行一个rehash，在这个过程中可能会造成一个链表的循环（环形链表的问题），就有可能我在进行下一个get（）的时候造成一个死循环，因为它是没有加锁的，在多个线程并发的情况下，它不能对它的数据保证安全，就是我push（）进去的值，取出来还是我push（）进去的一个值，这是一个非常不安全的情况。<br><strong>Java JDK1.8之后</strong> <strong>1.8 之后它会在链表尾插入（尾插法）</strong>还有一个对它的一个非常大的变化就是 数据结构发生了改变，Entry节点 被 Node节点给替代了 它是一个 <strong>数组+链表+红黑树</strong>的一个数据结构。 <strong>1.8之后对 put（k,v）的过程也做了一个优化</strong>，首先对key的hashcode（）做hash 算法计算，然后是return 到 putval（）方法中进行的，它首先先判断tab是否为null，为null就创建，再一个计算index，并对null做处理，然后判断节点key是否存在，如果不为null,也就是节点key存在，直接覆盖value，否则判断该链为红黑树，然后判断链表长度是否大于8，进行一个红黑树转换的处理，最后一个步骤是判断是否超过最大容量也就是扩容。</p>
+<p><strong>JDK1.8 源码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line"> <span class="number">2</span>     <span class="comment">// 对key的hashCode()做hash</span></span><br><span class="line"> <span class="number">3</span>     <span class="keyword">return</span> putVal(hash(key), key, value, <span class="keyword">false</span>, <span class="keyword">true</span>);</span><br><span class="line"> <span class="number">4</span> &#125;</span><br><span class="line"> <span class="number">5</span></span><br><span class="line"> <span class="number">6</span> <span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></span><br><span class="line"><span class="function"><span class="params"> <span class="number">7</span>                <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line"> <span class="number">8</span>     Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;</span><br><span class="line"> <span class="number">9</span>     <span class="comment">// 步骤①：tab为空则创建</span></span><br><span class="line"><span class="number">10</span>     <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line"><span class="number">11</span>         n = (tab = resize()).length;</span><br><span class="line"><span class="number">12</span>     <span class="comment">// 步骤②：计算index，并对null做处理</span></span><br><span class="line"><span class="number">13</span>     <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)</span><br><span class="line"><span class="number">14</span>         tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line"><span class="number">15</span>     <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="number">16</span>         Node&lt;K,V&gt; e; K k;</span><br><span class="line"><span class="number">17</span>         <span class="comment">// 步骤③：节点key存在，直接覆盖value</span></span><br><span class="line"><span class="number">18</span>         <span class="keyword">if</span> (p.hash == hash &amp;&amp;</span><br><span class="line"><span class="number">19</span>             ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line"><span class="number">20</span>             e = p;</span><br><span class="line"><span class="number">21</span>         <span class="comment">// 步骤④：判断该链为红黑树</span></span><br><span class="line"><span class="number">22</span>         <span class="keyword">else</span> <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode)</span><br><span class="line"><span class="number">23</span>             e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(<span class="keyword">this</span>, tab, hash, key, value);</span><br><span class="line"><span class="number">24</span>         <span class="comment">// 步骤⑤：该链为链表</span></span><br><span class="line"><span class="number">25</span>         <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="number">26</span>             <span class="keyword">for</span> (<span class="keyword">int</span> binCount = <span class="number">0</span>; ; ++binCount) &#123;</span><br><span class="line"><span class="number">27</span>                 <span class="keyword">if</span> ((e = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line"><span class="number">28</span>                     p.next = newNode(hash, key,value,<span class="keyword">null</span>);</span><br><span class="line">                        <span class="comment">//链表长度大于8转换为红黑树进行处理</span></span><br><span class="line"><span class="number">29</span>                     <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD - <span class="number">1</span>) <span class="comment">// -1 for 1st </span></span><br><span class="line"><span class="number">30</span>                         treeifyBin(tab, hash);</span><br><span class="line"><span class="number">31</span>                     <span class="keyword">break</span>;</span><br><span class="line"><span class="number">32</span>                 &#125;</span><br><span class="line">                    <span class="comment">// key已经存在直接覆盖value</span></span><br><span class="line"><span class="number">33</span>                 <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line"><span class="number">34</span>                     ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line"><span class="number">35</span>                            <span class="keyword">break</span>;</span><br><span class="line"><span class="number">36</span>                 p = e;</span><br><span class="line"><span class="number">37</span>             &#125;</span><br><span class="line"><span class="number">38</span>         &#125;</span><br><span class="line"><span class="number">39</span>        </span><br><span class="line"><span class="number">40</span>         <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123; <span class="comment">// existing mapping for key</span></span><br><span class="line"><span class="number">41</span>             V oldValue = e.value;</span><br><span class="line"><span class="number">42</span>             <span class="keyword">if</span> (!onlyIfAbsent || oldValue == <span class="keyword">null</span>)</span><br><span class="line"><span class="number">43</span>                 e.value = value;</span><br><span class="line"><span class="number">44</span>             afterNodeAccess(e);</span><br><span class="line"><span class="number">45</span>             <span class="keyword">return</span> oldValue;</span><br><span class="line"><span class="number">46</span>         &#125;</span><br><span class="line"><span class="number">47</span>     &#125;</span><br><span class="line"><span class="number">48</span>     ++modCount;</span><br><span class="line"><span class="number">49</span>     <span class="comment">// 步骤⑥：超过最大容量 就扩容</span></span><br><span class="line"><span class="number">50</span>     <span class="keyword">if</span> (++size &gt; threshold)</span><br><span class="line"><span class="number">51</span>         resize();</span><br><span class="line"><span class="number">52</span>     afterNodeInsertion(evict);</span><br><span class="line"><span class="number">53</span>     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"><span class="number">54</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>JDK 1.7 源码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line"><span class="number">2</span>    <span class="keyword">if</span> (table == EMPTY_TABLE) &#123; <span class="comment">//空表table的话，根据size的阈值填充</span></span><br><span class="line"><span class="number">3</span>       inflateTable(threshold);</span><br><span class="line"><span class="number">4</span>    &#125;</span><br><span class="line"><span class="number">5</span>    <span class="keyword">if</span> (key == <span class="keyword">null</span>)</span><br><span class="line"><span class="number">6</span>        <span class="keyword">return</span> putForNullKey(value);</span><br><span class="line"><span class="number">7</span>    <span class="keyword">int</span> hash = hash(key);<span class="comment">//成hash，得到索引Index的映射</span></span><br><span class="line"><span class="number">8</span>    <span class="keyword">int</span> i = indexFor(hash, table.length);</span><br><span class="line"><span class="number">9</span>    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[i]; e != <span class="keyword">null</span>; e = e.next) &#123;<span class="comment">//遍历当前索引的冲突链，找是否存在对应的key</span></span><br><span class="line"><span class="number">10</span>       Object k;</span><br><span class="line"><span class="number">11</span>        <span class="keyword">if</span> (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) &#123;<span class="comment">//如果存在对应的key， 则替换oldValue并返回oldValue</span></span><br><span class="line"><span class="number">12</span>            V oldValue = e.value;</span><br><span class="line"><span class="number">13</span>            e.value = value;</span><br><span class="line"><span class="number">14</span>            e.recordAccess(<span class="keyword">this</span>);</span><br><span class="line"><span class="number">15</span>            <span class="keyword">return</span> oldValue;</span><br><span class="line"><span class="number">16</span>        &#125;</span><br><span class="line"><span class="number">17</span>    &#125;</span><br><span class="line"><span class="number">18</span>    <span class="comment">//冲突链中不存在新写入的Entry的key</span></span><br><span class="line"><span class="number">19</span>    modCount++;</span><br><span class="line"><span class="number">20</span>    addEntry(hash, key, value, i);</span><br><span class="line"><span class="number">21</span>    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"><span class="number">22</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>什么是Hash碰撞？</strong></p>
+<p>所谓哈希碰撞，就是不同节点值（key-value键值对）的key值算出相同的下标值，就是有可能两个不同的原始值在经过hash算法运算后得到同样的结果，这样就是哈希碰撞</p>
+<p><strong>如何解决Hash碰撞的？</strong></p>
+<p>为解决哈希碰撞，hashmap采用链地址法解决哈希冲突，也就是采用链表解决哈希冲突，<br>但只单用链表解决哈希冲突的话，链表太长会导致操作hashmap的效率值下降得太多，<br>所以在jdk1.8之后，又引入了红黑树来解决哈希冲突，环形链表问题。</p>
+<p><strong>有几种方法？</strong></p>
+<p><strong>开放定址法</strong>：当发生地址冲突时，按照某种方法继续探测哈希表中的其他存储单元，直到找到空位置为止。<br><strong>链地址法</strong>：链地址法其实就是HashMap中用的策略<br>HashMap 使用LinkedList来解决碰撞问题。当发生碰撞，对象将会存储在LinkedList的下一个节点中。）<br>原理是在HashMap中同样哈希值的位置以一串链表存储起来数据，把多个原始值不同而哈希结果相同的数据以链表存储起来。</p>
+<p><strong>红黑怎么解决了冲突？ 为什么超过8就转红黑树？</strong></p>
+<p><strong>通过自旋</strong></p>
+<p>首先呢，你要清楚hashmap其实就是一个数组（entry类型的数组）。<br>理想的哈希表，是尽可能让节点分散到数组的各个下标位置上，而又不重复（没有哈希冲突）。<br>这样呢，才是最理想的hashmap，时间复杂度是O（1）。<br>但是呢，没有一个哈希算法可以避免哈希冲突，冲突再所难免，所以有冲突呢，就得想办法解决。<br>而链表跟红黑树其实只是解决哈希冲突的一个方式而已</p>
+<p>因为只单单链表解决哈希冲突的话，当长度超过8时，效率明显不及用红黑树解决哈希冲突</p>
+<p>8就是一个链表跟红黑树解决哈希冲突效率对比的临界点</p>
+<p><strong>当key相同时会发生什么 key不同呢？</strong></p>
+<p>不会有相同的key，其hashCode一定一样，那么put时回去同一桶链表中寻找，而在源码中put的时候<br>如果key和hashCode都与之前存在的节点一样，那么会用新的value覆盖旧的value,并且put方法返回新value的值。</p>
+<p><strong>hashmap是线程安全的吗？还有什么线程安全map（类）</strong></p>
+<p>因为 hashmap 的 key可以为null值，当发生并发问题时，会出现两个问题：  1）、链表可能会形成环形  2）、发生数据覆盖问题    当一个线程进来的时候，开始判断索引值，    如果索引值为空，当它开始new对象时，代码还没来得及执行，    第二个线程进来，会直接判断为null，会把之前的数据给覆盖掉，发生数据覆盖问题</p>
+<p><strong>线程安全map</strong>:  HashTable  SynchronizedMap <strong>ConcurrentHashMap - 推荐</strong>（并发高）</p>
+<p><strong>为什么同样是线程安全的不用HashTable 而使用 ConcurrentHashMap ？</strong></p>
+<p>因为它的并发度是更高的，普通的 HashTable 保证线程安全的策略是直接对里面的方法进行一个 Synchronized就是加了一个同步锁，而ConcurrentHashMap 的数据结构在1.8之后同样的是 数组+链表+红黑树 它在执行Synchronized上锁的一个过程它只锁住我目前获取到的那个Entry 所在的那个节点的一个值，而且它上锁是使用了  CAS + Synchronized,再加上JDK 1.6之后对Synchronized的一个优化锁升级的过程，它的执行效率，并发是更高的。</p>
+<p><strong>PS</strong>:上面这段话如果不理解的话，别着急，我下面还写了一段关于线程安全的HashMap的描述，或者可以看看我之前写的两篇源码分析的文章</p>
+<p><strong>什么是锁升级？锁升级的一个过程是什么？</strong></p>
+<p>最开始的时候它是一个无锁的状态，当一个线程上来它会去先判断一下是否上了锁，然后再升级，这个锁是支持偏向锁的，就是当前我获取到的锁资源的这个线程，我会优先让他再去获取到这个锁，如果它没有获取到这个锁，就升级成一个轻量级的，一个CAS的锁就是一个乐观锁，乐观锁的时候它是一个比较有交换的过程，如果这个CAS连续没有设置成功的话，它会进行一个自旋，然后自旋到一定的次数之后会升级成一个Synchronized一个重量级的锁，这样的话就保证了它的一个性能的问题</p>
+<p><strong>Hashmap是线程安全的吗？如何将它变为线程安全的？</strong></p>
+<p><strong>Hashmap</strong>对应的线程安全类有 <strong>Hashtable</strong>、有<strong>ConcurrentHashmap</strong>，也可以通过<strong>Collections</strong>工具类 通过  Collections.Synchronized  将Hashmap包装成线程安全版的map。如果要在三个做出选择，还是建议使用ConcurrentHashMap，因为ConcurrentHashMap的锁粒度要更小，效率要更高。<br>虽然这三者都有通过Synchronized同步锁实现的线程安全。<br>但是这其中，Hashtable的效率跟通过Collections工具类包装的map的效率基本无异，这两者的锁粒度一样，差别只是Hashtable锁的是对象本身，而通过Collections工具类包装的map锁的是同一个Object对象，进入方法后就是一段加了Synchronized同步锁的代码段。两者锁粒度是一样的，效率实际也都没多大区别。<br>而ConcurrentHashMap在JDK1.8版本的时，它加锁的机制是怎样的？它是先根据待插入的节点对象的key值算出节点对象该该放在数组（ConcurrentHashmap底层就是数组）的哪个下标位置上，在看看这个下标位置是否为空，为空则通过CAS机制（乐观锁）来插入节点对象。而如果下标位置不为空，那么ConcurrentHashMap会以Synchronized同步锁来加锁，加锁的对象是数组下标位置上的头节点对象，这样呢，<strong>锁的粒度就小很多，出现并发的概率也会小很多</strong>，自然效率要比前两者高很多。<br>就是说Hashtable及Collections包装的map加锁是锁整一段数组，而ConcurrentHashmap会先在下标位置空的时候通过CAS机制（乐观锁）插入节点数据，此种方式其实是没加锁，而当下标位置不为空时，就是这个下标位置是有数据的，它才会加锁到具体的下标的一个位置。</p>
+<p><strong>哈希表  数组  链表的区别。</strong></p>
+<p>程序中，存放指定的数据最常用的数据结构有两种：数组和链表。</p>
+<p><strong>数组和链表的区别：</strong></p>
+<p>1，数组是将元素在内存中连续存放（顺序存储）。<br>   链表中的元素在内存中不是顺序存储的，而是通过存在元素中的指针联系到一起。</p>
+<p>2，数组必须事先定义固定的长度，不能适应数据动态的增减的情况。当数据增加时，可能超出原先定义的元素个数；当数据减少时，造成内存浪费；<br>   链表动态地进行存储分配，可以适应数据变化动态地增减。</p>
+<p>3，（静态）数组从栈中分配空间，对于程序方便快速，但是自由度小；<br>    链表从堆中分配空间，自由度大但是申请管理比较麻烦。</p>
+<p> <strong>数组和链表在存储数据方面到底谁好？根据数组和链表的特性，分两种情况讨论：</strong></p>
+<p>1，当进行数据查询时，数组可以直接通过下标迅速访问数组中的元素。<br>   而链表则需要从第一个元素开始一直找到需要的元素位置，显然，数组的查询效率会比链表的高。</p>
+<p>2，当进行增加或删除元素时，在数组中增加一个元素，需要移动大量元素，在内存中空出一个元素的空间，<br>然后将要增加的元素放在其中。同样，如果想删除一个元素，需要移动大量去填掉被移动的元素，<br>而链表只需改动元素中的指针即可实现增加或删除元素。</p>
+<p><strong>那么哈希表，是既能具备数组的快速查询的优点，又能融合链表方便快捷的增加删除元素的优势。</strong></p>
+<p>所谓的hash,简单的说就是散列，即将输入的数据通过hash函数得到一个key值，输入的数据存储到数组中下标的key值的数组单元中去。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/01/Tomcat-APR%E8%B0%83%E4%BC%98/" rel="prev" title="Tomcat-APR调优">
+      <i class="fa fa-chevron-left"></i> Tomcat-APR调优
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/19/SQL%E4%BC%98%E5%8C%96%EF%BC%88%E4%B8%80%EF%BC%89/" rel="next" title="SQL优化笔记（一）">
+      SQL优化笔记（一） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="comments"></div>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HashMap"><span class="nav-number">1.</span> <span class="nav-text">HashMap</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张城子"
+      src="/images/touxiang.gif">
+  <p class="site-author-name" itemprop="name">张城子</p>
+  <div class="site-description" itemprop="description">时代的一粒灰尘落在个人头上，就是一座山</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhangchengzi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhangchengzi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1069267387@qq.com" title="E-Mail → mailto:1069267387@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张城子</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  <script src="//code.tidio.co/yo54advhndcyeujqgvq3i0x6wcio3rrq.js"></script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js', () => {
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail';
+  guest = guest.split(',').filter(item => {
+    return GUEST.includes(item);
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: '5OeoaeYEyVohLkLvXS9xkFdu-gzGzoHsz',
+    appKey: 'NBYQJovhWRuLLaWxLeKWHOvT',
+    placeholder: "ヾﾉ≧∀≦)o来啊，快活啊!",
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn',
+    path: location.pathname,
+    recordIP: false,
+    serverURLs: ''
+  });
+}, window.Valine);
+</script>
+
+
+  
+  <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+  <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+  <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+</body>
+</html>
